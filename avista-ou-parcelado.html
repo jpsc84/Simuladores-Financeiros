@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#12463B">
+<title>Pagar à vista ou parcelar · @juanpablodsc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#EAEDEC;--card:#F4F6F5;--ink:#0E2A24;--ink-soft:#3D544D;--line:#C9D2CF;--petrol:#12463B;--brass:#B07D2B;--sage:#3E7C6B;--steel:#4B6C86;--clay:#9E3B26;--muted:#7A8A85;--shadow:0 1px 2px rgba(14,42,36,.06),0 8px 24px rgba(14,42,36,.06);}
+*{box-sizing:border-box}html{color-scheme:light;}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+.num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+.wrap{max-width:820px;margin:0 auto;padding:18px 16px 64px;}
+header.top{background:var(--ink);color:#EAF1EE;border-radius:16px;padding:20px 18px 24px;margin-bottom:22px;box-shadow:var(--shadow);}
+.back{display:inline-flex;align-items:center;gap:7px;color:#EAF1EE;text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.02em;font-weight:500;padding:8px 14px;border:1px solid #3A5A50;border-radius:9px;background:#0C2620;margin-bottom:16px;transition:background .15s,border-color .15s;}
+.back:hover{background:#16453A;border-color:#4E6E63;color:#fff;}
+.finrow{display:flex;justify-content:center;align-items:center;gap:13px;margin:6px 0 14px;}
+.finrow svg{width:24px;height:24px;flex:none;}.finrow .op{font-family:"IBM Plex Mono",monospace;font-size:18px;line-height:1;color:#E7B968;font-weight:600;}
+h1{font-family:"Archivo",sans-serif;font-weight:800;font-stretch:112%;color:#FFFFFF;font-size:clamp(26px,6vw,40px);line-height:1.02;letter-spacing:-.02em;margin:14px 0 6px;text-align:center;}
+h1 em{font-style:normal;color:#E7B968;}
+.sub{color:#C6D3CE;max-width:60ch;font-size:14.5px;text-align:center;margin-left:auto;margin-right:auto;}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);display:flex;align-items:center;gap:8px;margin:26px 0 12px;}
+.eyebrow::before{content:"";width:16px;height:1px;background:var(--brass);display:inline-block;}
+.note{color:var(--ink-soft);font-size:13.5px;margin:-4px 0 14px;max-width:72ch;line-height:1.5;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);}
+.field{margin:12px 0;}.field>label{display:block;font-size:12px;color:var(--ink);font-weight:600;margin-bottom:5px;}
+.field input{width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-size:16px;color:var(--ink);font-family:"IBM Plex Mono",monospace;}
+.field input:focus{outline:2px solid var(--sage);outline-offset:1px;border-color:transparent;}
+.field .hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
+.affix{position:relative;}.affix .u{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:13px;pointer-events:none;}.affix input{padding-right:44px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff;}
+.seg button{flex:1;border:none;background:transparent;padding:9px 6px;font-size:13px;cursor:pointer;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;}
+.seg button.on{background:var(--ink);color:#fff;}
+.subhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);margin:8px 0;padding-top:14px;border-top:1px dashed var(--line);}
+.subhead:first-child{padding-top:0;border-top:none;}
+.big{padding:2px 0 4px;}.big .k{font-size:12px;color:var(--muted);}
+.big .v{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(26px,7vw,40px);letter-spacing:-.02em;line-height:1.04;margin-top:2px;}
+.big.avista .v{color:var(--clay);}.big.parcelar .v{color:var(--sage);}
+.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0 4px;}
+.metric{border:1px solid var(--line);border-radius:11px;padding:11px 12px;background:#fff;}
+.metric .t{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-family:"IBM Plex Mono",monospace;}
+.metric .n{font-family:"Archivo",sans-serif;font-weight:700;font-size:17px;margin-top:3px;color:var(--ink);}
+.verdict{background:var(--ink);color:#EAF1EE;border-radius:12px;padding:14px 15px;margin:14px 0;font-size:14.5px;line-height:1.5;}
+.verdict b{color:#fff;}.verdict .hl{color:#E9C77E;}
+details.mes{margin-top:4px;}
+details.mes summary{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--petrol);font-weight:600;padding:4px 0;}
+.tablewrap{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:11px;background:#fff;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line);}
+th:first-child,td:first-child{text-align:left;}
+tr:last-child td{border-bottom:none;}
+th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+td.neg{color:var(--clay);}
+.read li{color:var(--ink-soft);font-size:13.5px;margin:7px 0;line-height:1.5;list-style:none;padding-left:16px;position:relative;}
+.read li::before{content:"›";position:absolute;left:0;color:var(--brass);font-weight:700;}ul.read{padding-left:0;margin:0;}
+.seealso{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:9px 12px;}
+.seealso .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);width:100%;}
+.seealso a{color:var(--petrol);text-decoration:none;font-size:13.5px;font-weight:600;border:1px solid var(--line);border-radius:20px;padding:6px 13px;background:var(--card);}
+.seealso a:hover{border-color:var(--petrol);background:#e6ede9;}.seealso + footer{margin-top:18px;border-top:none;padding-top:0;}
+footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;font-family:"IBM Plex Mono",monospace;line-height:1.6;}
+@media (max-width:640px){.row2{grid-template-columns:1fr;}.metrics{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="back" href="index.html">← Voltar</a>
+    <div class="finrow">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="13" width="4" height="8" fill="#9FB4AD"/><rect x="10" y="8" width="4" height="13" fill="#E7B968"/><rect x="17" y="4" width="4" height="17" fill="#9FB4AD"/></svg>
+      <span class="op">+</span><span class="op">−</span><span class="op">×</span><span class="op">%</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#9FB4AD" stroke-width="2"/><path d="M12 12 L12 3 A9 9 0 0 1 21 12 Z" fill="#E7B968"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E7B968" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3,17 9,11 13,15 21,6"/><polyline points="15,6 21,6 21,12"/></svg>
+    </div>
+    <h1>Pagar à vista ou <em>parcelar?</em></h1>
+    <p class="sub">Se a loja dá desconto para pagar à vista, o parcelado "sem juros" tem juro escondido. A regra é simples: se esse juro for maior do que o seu dinheiro rende aplicado, pagar à vista ganha. Veja a conta na prática.</p>
+  </header>
+
+  <div class="eyebrow">Os números</div>
+  <p class="note">Preencha o preço, as parcelas, o desconto à vista e o rendimento do seu investimento. O resultado aparece sozinho.</p>
+  <div class="card">
+    <div class="subhead">A compra</div>
+    <div class="row2">
+      <div class="field"><label>Preço no parcelado</label>
+        <div class="affix"><input class="num" id="preco" type="number" min="0" step="10" value="" placeholder="ex: 3000"><span class="u">R$</span></div>
+        <div class="hint">o valor cheio, somando todas as parcelas</div></div>
+      <div class="field"><label>Número de parcelas</label>
+        <div class="affix"><input class="num" id="parcelas" type="number" min="1" max="48" step="1" value="" placeholder="ex: 10"><span class="u">x</span></div>
+        <div class="hint">parcelas iguais, sem juros, a primeira em 30 dias</div></div>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label>Desconto para pagar à vista</label>
+        <div class="affix"><input class="num" id="desc" type="number" min="0" step="0.5" value="" placeholder="ex: 5"><span class="u" id="u-desc">%</span></div></div>
+      <div class="field"><label>Você sabe o</label>
+        <div class="seg" id="seg-formaDesc"><button data-v="pct" class="on">Desconto em %</button><button data-v="valor">Preço à vista</button></div></div>
+    </div>
+    <div class="hint" style="color:var(--muted);font-size:11.5px;margin-top:-6px">o abatimento no Pix, no boleto ou no dinheiro. Se a loja só informa o preço à vista, escolha "Preço à vista" e digite o valor em reais</div>
+
+    <div class="subhead">O investimento</div>
+    <div class="row2">
+      <div class="field"><label>Rendimento esperado</label>
+        <div class="affix"><input class="num" id="rend" type="number" min="0" step="0.1" value="" placeholder="ex: 13,6"><span class="u">% a.a.</span></div>
+        <div class="hint">onde o dinheiro ficaria enquanto você paga. Um CDB a 100% do CDI rende perto da Selic</div></div>
+      <div class="field"><label>IR sobre o rendimento</label>
+        <div class="affix"><input class="num" id="ir" type="number" min="0" max="100" step="0.5" value="" placeholder="ex: 22,5"><span class="u">%</span></div>
+        <div class="hint">CDB e Tesouro: 22,5% até 6 meses, 20% até 1 ano. Deixe em branco se for isento (LCI, LCA, poupança)</div></div>
+    </div>
+    <div class="field"><label>Outras taxas e custos</label>
+      <div class="affix"><input class="num" id="taxas" type="number" min="0" step="0.1" value="" placeholder="ex: 0"><span class="u">% a.a.</span></div>
+      <div class="hint">taxa de administração, custódia ou corretora. CDB de banco digital costuma ser zero; se não souber, de 0,3% a 1% ao ano é uma referência.</div></div>
+  </div>
+
+  <div class="eyebrow">O que compensa</div>
+  <div class="card">
+    <div class="big" id="bigbox"><div class="k" id="r_k">Resultado</div><div class="v num" id="r_diff">—</div></div>
+    <div class="metrics">
+      <div class="metric"><div class="t">Juro escondido no parcelado</div><div class="n num" id="m_juro">—</div></div>
+      <div class="metric"><div class="t">Rendimento líquido do dinheiro</div><div class="n num" id="m_rend">—</div></div>
+      <div class="metric"><div class="t">Desconto que empata</div><div class="n num" id="m_eq">—</div></div>
+    </div>
+    <div class="verdict" id="verdict">Preencha os campos para ver o resultado.</div>
+    <details class="mes" id="det" hidden>
+      <summary>Ver mês a mês</summary>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Mês</th><th>Rendeu</th><th>Parcela</th><th>Saldo aplicado</th></tr></thead>
+          <tbody id="tabela"></tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <div class="eyebrow">Como ler o resultado</div>
+  <div class="card">
+    <ul class="read">
+      <li>O juro escondido é a taxa que transforma o preço à vista nas parcelas. Com desconto à vista, o parcelado deixa de ser de graça: você pega o desconto emprestado e devolve em parcelas.</li>
+      <li>A conta simula aplicar o valor à vista no dia da compra e tirar dele cada parcela no vencimento. Se o saldo não chega até a última parcela, pagar à vista ganha. Se sobra, parcelar e investir ganha, e a sobra é o tamanho da vantagem.</li>
+      <li>O desconto que empata é o ponto de virada: acima dele, pague à vista; abaixo, parcelar e investir deixa mais dinheiro no bolso.</li>
+      <li>Sem desconto nenhum, parcelar sem juros e deixar o dinheiro rendendo sempre sobra alguma coisa. Só vale se você pagar todas as faturas em dia, porque o rotativo do cartão custa muito mais do que qualquer investimento rende.</li>
+      <li>A vantagem de parcelar só existe se o dinheiro ficar aplicado até a última parcela. Se ele virar outra compra, as parcelas viram peso no orçamento dos próximos meses.</li>
+    </ul>
+  </div>
+
+  <div class="seealso"><span class="lbl">Veja também</span><a href="financiamento.html">Financiar ou pagar à vista</a><a href="quitar-ou-investir.html">Quitar dívida ou investir</a><a href="cartao-rotativo.html">Cartão no rotativo</a><a href="comparador-investimentos.html">Comparador de investimentos</a></div>
+
+  <footer>
+    <div>Pagar à vista ou parcelar · ferramenta educativa @juanpablodsc</div>
+    <div>Conteúdo educativo. Não é recomendação financeira nem consultoria individual.</div>
+  </footer>
+</div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const BRL=v=>(isFinite(v)?v:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
+const val=id=>{const x=parseFloat(($(id).value+'').replace(',','.'));return isFinite(x)?x:null;};
+const pct=(v,d=1)=>v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+'%';
+const state={formaDesc:'pct'};
+
+// taxa mensal i tal que avista = parcela*(1-(1+i)^-n)/i
+function juroImplicito(avista,parcela,n){
+  if(parcela*n<=avista+1e-9) return 0;
+  const vp=i=>parcela*(1-Math.pow(1+i,-n))/i;
+  let lo=1e-9,hi=1;
+  for(let k=0;k<200;k++){const mid=(lo+hi)/2;if(vp(mid)>avista)lo=mid;else hi=mid;}
+  return (lo+hi)/2;
+}
+
+function compute(){
+  const P=val('preco'), N=val('parcelas'), D=val('desc'), rend=val('rend'), ir=val('ir')||0, tx=val('taxas')||0;
+  const nOk = N!==null && Number.isInteger(N) && N>=1 && N<=48;
+  let avista=null;
+  if(P>0 && D!==null && D>=0){
+    avista = state.formaDesc==='pct' ? (D<100 ? P*(1-D/100) : null) : (D>0 && D<=P ? D : null);
+  }
+  const ready = P>0 && nOk && avista!==null && rend!==null && rend>=0;
+  if(!ready){ setEmpty(); $('verdict').innerHTML='Preencha o preço, as parcelas, o desconto e o rendimento para ver o resultado.'; return; }
+
+  const parcela=P/N;
+  const iM=juroImplicito(avista,parcela,N);
+  const juroAnual=(Math.pow(1+iM,12)-1)*100;
+  const netAnnual=Math.max((rend-tx)*(1-ir/100),-99);
+  const rM=Math.pow(1+netAnnual/100,1/12)-1;
+  const descPct=(1-avista/P)*100;
+  const eq = rM>0 ? (1-((1-Math.pow(1+rM,-N))/rM)/N)*100 : 0;
+
+  let saldo=avista, rows='';
+  for(let m=1;m<=N;m++){
+    const g=saldo*rM; saldo+=g; saldo-=parcela;
+    rows+=`<tr><td class="num">${m}</td><td class="num">${BRL(g)}</td><td class="num">${BRL(parcela)}</td><td class="num${saldo<0?' neg':''}">${BRL(saldo)}</td></tr>`;
+  }
+  $('tabela').innerHTML=rows; $('det').hidden=false;
+
+  $('m_juro').textContent=pct(iM*100,2)+' a.m.';
+  $('m_rend').textContent=pct(rM*100,2)+' a.m.';
+  $('m_eq').textContent=pct(eq);
+
+  const box=$('bigbox');
+  if(Math.abs(saldo)<0.5){
+    box.className='big'; $('r_k').textContent='Empate'; $('r_diff').textContent=BRL(0);
+    $('verdict').innerHTML=`Empate. O desconto de <b>${pct(descPct)}</b> está praticamente no ponto de virada. Escolha pela praticidade ou pelo que cabe melhor no seu orçamento.`;
+  } else if(saldo<0){
+    box.className='big avista'; $('r_k').textContent='Pagar à vista deixa você à frente em'; $('r_diff').textContent=BRL(-saldo);
+    $('verdict').innerHTML=`Pagar à vista é melhor. O parcelado esconde um juro de <b>${pct(iM*100,2)}</b> ao mês (<b>${pct(juroAnual)}</b> ao ano), mais do que os <b>${pct(rM*100,2)}</b> líquidos que o seu dinheiro renderia. Parcelando e investindo, faltariam <span class="hl">${BRL(-saldo)}</span> no fim para cobrir as ${N} parcelas.`;
+  } else {
+    box.className='big parcelar'; $('r_k').textContent='Parcelar e investir deixa você à frente em'; $('r_diff').textContent=BRL(saldo);
+    $('verdict').innerHTML=`Parcelar e investir é melhor aqui. O seu dinheiro rende <b>${pct(rM*100,2)}</b> líquidos ao mês, acima do juro escondido de <b>${pct(iM*100,2)}</b>. Depois da última parcela, sobram <span class="hl">${BRL(saldo)}</span> aplicados, desde que o dinheiro fique investido até lá e nenhuma fatura atrase.`;
+  }
+}
+function setEmpty(){['r_diff','m_juro','m_rend','m_eq'].forEach(id=>$(id).textContent='—');$('r_k').textContent='Resultado';$('bigbox').className='big';$('det').hidden=true;}
+document.querySelectorAll('#seg-formaDesc button').forEach(b=>b.addEventListener('click',()=>{
+  state.formaDesc=b.dataset.v;
+  document.querySelectorAll('#seg-formaDesc button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const isPct=state.formaDesc==='pct';
+  $('u-desc').textContent=isPct?'%':'R$';
+  $('desc').placeholder=isPct?'ex: 5':'ex: 2850';
+  $('desc').step=isPct?'0.5':'10';
+  $('desc').value='';
+  compute();
+}));
+document.querySelectorAll('input').forEach(el=>el.addEventListener('input',compute));
+compute();
+</script>
+</body>
+</html>
