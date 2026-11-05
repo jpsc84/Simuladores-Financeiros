@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#12463B">
+<title>Seguro de vida na conta certa · Na Ponta do Lápis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#EAEDEC;--card:#F4F6F5;--ink:#0E2A24;--ink-soft:#3D544D;--line:#C9D2CF;--petrol:#12463B;--brass:#B07D2B;--sage:#3E7C6B;--steel:#4B6C86;--clay:#9E3B26;--muted:#7A8A85;--shadow:0 1px 2px rgba(14,42,36,.06),0 8px 24px rgba(14,42,36,.06);}
+*{box-sizing:border-box}html{color-scheme:light;}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+.num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+.wrap{max-width:820px;margin:0 auto;padding:18px 16px 64px;}
+header.top{background:var(--ink);color:#EAF1EE;border-radius:16px;padding:20px 18px 24px;margin-bottom:22px;box-shadow:var(--shadow);}
+.back{display:inline-flex;align-items:center;gap:7px;color:#EAF1EE;text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.02em;font-weight:500;padding:8px 14px;border:1px solid #3A5A50;border-radius:9px;background:#0C2620;margin-bottom:16px;transition:background .15s,border-color .15s;}
+.back:hover{background:#16453A;border-color:#4E6E63;color:#fff;}
+.finrow{display:flex;justify-content:center;align-items:center;gap:13px;margin:6px 0 14px;}
+.finrow svg{width:24px;height:24px;flex:none;}.finrow .op{font-family:"IBM Plex Mono",monospace;font-size:18px;line-height:1;color:#E7B968;font-weight:600;}
+h1{font-family:"Archivo",sans-serif;font-weight:800;font-stretch:112%;color:#FFFFFF;font-size:clamp(26px,6vw,40px);line-height:1.02;letter-spacing:-.02em;margin:14px 0 6px;text-align:center;}
+h1 em{font-style:normal;color:#E7B968;}
+.sub{color:#C6D3CE;max-width:60ch;font-size:14.5px;text-align:center;margin-left:auto;margin-right:auto;}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);display:flex;align-items:center;gap:8px;margin:26px 0 12px;}
+.eyebrow::before{content:"";width:16px;height:1px;background:var(--brass);display:inline-block;}
+.note{color:var(--ink-soft);font-size:13.5px;margin:-4px 0 14px;max-width:72ch;line-height:1.5;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);}
+.field{margin:12px 0;}.field>label{display:block;font-size:12px;color:var(--ink);font-weight:600;margin-bottom:5px;}
+.field input{width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-size:16px;color:var(--ink);font-family:"IBM Plex Mono",monospace;}
+.field input:focus{outline:2px solid var(--sage);outline-offset:1px;border-color:transparent;}
+.field .hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
+.affix{position:relative;}.affix .u{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:13px;pointer-events:none;}.affix input{padding-right:44px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff;}
+.seg button{flex:1;border:none;background:transparent;padding:11px 6px;font-size:13px;cursor:pointer;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;}
+.seg button.on{background:var(--ink);color:#fff;}
+.inv{display:grid;grid-template-columns:1.2fr 1fr;gap:8px;align-items:center;margin:8px 0;}
+.inv .nm{display:flex;flex-direction:column;gap:2px;} .inv .nm b{font-size:13.5px;font-weight:600;} .inv .nm span{font-size:10.5px;color:var(--muted);font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em;}
+.inv .affix input{padding:9px 34px 9px 10px;font-size:14px;}
+.inv .affix .u{font-size:12px;}
+.subhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);margin:14px 0 6px;}
+.big{padding:2px 0 4px;}.big .k{font-size:12px;color:var(--muted);}
+.big .v{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(24px,6.5vw,38px);letter-spacing:-.02em;line-height:1.05;margin-top:2px;color:var(--sage);}
+table.res{width:100%;border-collapse:collapse;margin:8px 0 4px;font-size:13.5px;}
+table.res th,table.res td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);}
+table.res th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+table.res td.n{font-family:"IBM Plex Mono",monospace;text-align:right;}
+table.res tr.win td{background:#e7f0ea;} table.res tr.win td:first-child{font-weight:700;border-left:3px solid var(--sage);}
+table.res .liq{font-weight:700;color:var(--petrol);}
+.verdict{background:var(--ink);color:#EAF1EE;border-radius:12px;padding:14px 15px;margin:14px 0;font-size:14.5px;line-height:1.5;}
+.verdict b{color:#fff;}.verdict .hl{color:#9BD6B0;}
+.realbox{margin-top:12px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px;}
+.realbox .rt{font-size:13px;color:var(--ink-soft);line-height:1.5;margin-bottom:4px;}
+.realbox ul{margin:6px 0 0;padding-left:0;list-style:none;}
+.realbox li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--ink);padding:6px 0;font-family:"IBM Plex Mono",monospace;border-bottom:1px solid var(--line);}
+.realbox li:last-child{border-bottom:none;}.realbox li .rr{color:var(--muted);white-space:nowrap;}.realbox li .rneg{color:var(--clay);}
+.read li{color:var(--ink-soft);font-size:13.5px;margin:7px 0;line-height:1.5;list-style:none;padding-left:16px;position:relative;}
+.read li::before{content:"›";position:absolute;left:0;color:var(--brass);font-weight:700;}ul.read{padding-left:0;margin:0;}
+.seealso{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:9px 12px;}
+.seealso .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);width:100%;}
+.seealso a{color:var(--petrol);text-decoration:none;font-size:13.5px;font-weight:600;border:1px solid var(--line);border-radius:20px;padding:6px 13px;background:var(--card);}
+.seealso a:hover{border-color:var(--petrol);background:#e6ede9;}.seealso + footer{margin-top:18px;border-top:none;padding-top:0;}
+footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;font-family:"IBM Plex Mono",monospace;line-height:1.6;}
+@media (max-width:640px){.row2{grid-template-columns:1fr;}}
+
+select{width:100%;background:white;border:1px solid var(--line);border-radius:9px;padding:11px 9px;color:var(--ink);font:inherit}button{cursor:pointer;font:inherit;border:1px solid var(--line);background:white;color:var(--petrol);border-radius:9px;padding:9px 13px}button:hover{border-color:var(--sage)}button.primary{background:var(--petrol);color:white}button:disabled{opacity:.5;cursor:default}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--brass);outline-offset:3px}h2,h3{font-family:Archivo,sans-serif}h2{font-size:21px;margin:0 0 8px}h3{font-size:17px;margin:8px 0}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.warning{background:#faf1df;border-left:3px solid var(--brass);padding:12px 14px;border-radius:8px;font-size:13px;margin:12px 0}.error{color:var(--clay);font-weight:600}.plan{margin-bottom:12px}.plan summary{cursor:pointer;font-weight:600;padding:4px 0}.plan summary::marker{color:var(--brass)}.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.wide{grid-column:1/-1}.badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 8px;border-radius:6px;background:#e2ebe7;color:var(--petrol)}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{padding:12px;background:white;border:1px solid var(--line);border-radius:10px}.metric small{display:block;color:var(--ink-soft)}.metric strong{font-family:'IBM Plex Mono',monospace;display:block;font-size:17px;color:var(--petrol);margin:6px 0}.result{margin-bottom:12px;border-top:3px solid var(--sage)}.scroll{overflow-x:auto}table.res{min-width:650px}svg.chart{width:100%;height:auto;display:block}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px}.legend span::before{content:'●';color:var(--series);margin-right:6px}.chart-title{font-size:15px;margin:18px 0 4px}.hint{font-size:12px;color:var(--ink-soft)}.controls label{display:block;font-size:12px;font-weight:600}input[type=range]{width:100%;accent-color:var(--petrol)}.sources a{color:var(--petrol)}.status{font-size:12px;color:var(--clay)}@media(max-width:520px){.plan-grid,.metric-grid{grid-template-columns:1fr}.wide{grid-column:auto}.metric strong{font-size:16px}.wrap{padding-left:12px;padding-right:12px}}@media print{button,.back,#plans, .controls{display:none}details{display:block}.card{box-shadow:none;break-inside:avoid}.wrap{max-width:none}body{background:white}}
+
+input::placeholder{color:#8B9993;opacity:1}select:has(option[value=""]:checked){color:#8B9993}select option{color:var(--ink)}.plan .field{margin:7px 0}.plan summary{font-family:Archivo,sans-serif;font-size:17px}.advanced{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}.advanced>summary{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500}.summary-table{min-width:580px}.summary-table th:first-child{width:32%}.summary-table td{font-family:'IBM Plex Mono',monospace;text-align:right}.summary-table th:not(:first-child){text-align:right}.empty{text-align:center;padding:26px 16px;color:var(--ink-soft)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.quiet{font-size:12px;color:var(--ink-soft)}.result-note{font-size:12px;margin:10px 0 0}details.card{margin-top:12px}details.card>summary{cursor:pointer;font-weight:600}h1{font-size:clamp(26px,6vw,38px)}
+</style></head><body><main class="wrap">
+<header class="top"><a class="back" href="index.html">← Voltar</a><div class="finrow">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="13" width="4" height="8" fill="#9FB4AD"/><rect x="10" y="8" width="4" height="13" fill="#E7B968"/><rect x="17" y="4" width="4" height="17" fill="#9FB4AD"/></svg>
+      <span class="op">+</span><span class="op">−</span><span class="op">×</span><span class="op">%</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#9FB4AD" stroke-width="2"/><path d="M12 12 L12 3 A9 9 0 0 1 21 12 Z" fill="#E7B968"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E7B968" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3,17 9,11 13,15 21,6"/><polyline points="15,6 21,6 21,12"/></svg>
+    </div><h1>Seguro de vida <em>na conta certa</em></h1><p class="sub">Veja quanto você pagaria por cada seguro, quanto sua família receberia por morte natural ou acidental e o que esse dinheiro compraria no futuro. Compare também com o saldo que teria ao investir as mesmas parcelas.</p></header>
+<form id="sim" novalidate>
+<div class="eyebrow">01 · Quando comparar</div><p class="note">Escolha daqui a quantos anos quer fazer a comparação. A inflação mostra quanto o dinheiro poderá perder de poder de compra até lá.</p><section class="card"><div class="row2">
+<div class="field"><label for="horizon">Daqui a quantos anos?</label><input id="horizon" type="number" min="1" max="100" step="1" placeholder="ex.: 20" required></div>
+<div class="field"><label for="inflation">Inflação (% ao ano)</label><input id="inflation" type="number" min="0" max="30" step="0.1" placeholder="ex.: 5" required></div></div></section>
+<div class="eyebrow">02 · Seus seguros</div><p class="note">Copie os valores da proposta. Separe por quanto tempo você paga e por quanto tempo sua família fica protegida. Preencha ao menos um plano; as sugestões em cinza não entram na conta.</p><div id="plans"></div>
+<div class="actions"><button type="button" id="add">+ Adicionar plano</button></div>
+<div class="eyebrow">03 · E se investir as parcelas?</div><p class="note">Marque os investimentos que quer testar e informe o rendimento esperado de cada um. Para cada seguro preenchido, vamos aplicar o mesmo dinheiro que sairia do seu bolso, pelos mesmos meses de pagamento.</p><section class="card"><p class="quiet">A inflação é a mesma da seção 01. As taxas abaixo são hipóteses suas, não ofertas de mercado. Custos e IR serão descontados do investimento.</p><div id="investment-options"></div><p class="quiet">Não quer comparar investimentos? Deixe as opções desmarcadas.</p></section>
+<div class="actions"><button type="submit" class="primary">Comparar cenários</button><button type="button" id="reset">Limpar tudo</button></div><p id="errors" class="error" role="alert"></p>
+</form>
+<div class="eyebrow">04 · Quanto custa e quanto protege</div><p class="note">O custo é tudo o que você pagaria até o ano escolhido. A indenização é o que a família receberia se uma morte coberta acontecesse naquele momento. “Reais de hoje” traduz esse valor para o poder de compra atual.</p><section class="card" id="results" aria-live="polite"><p class="empty">Preencha os dados para ver a comparação.</p></section>
+<section class="card" id="investment-results" hidden aria-live="polite"></section>
+<details class="card" id="charts-panel" hidden><summary>Ver evolução e dados anuais</summary><p class="quiet">Veja quando a proteção acaba e quanto já teria pago em cada ano. No aniversário de término, a cobertura já está encerrada. O gráfico do investimento mostra o saldo líquido se o resgate ocorresse em cada ano, sem resgates intermediários.</p><div id="coverage-chart"></div><div id="accident-chart"></div><div id="cost-chart"></div><div id="legend" class="legend"></div><div id="investment-chart"></div><details class="advanced"><summary>Tabela anual dos seguros</summary><p class="quiet">Cada linha mostra um ano completo: o custo já pago e a proteção ainda ativa naquele momento.</p><div class="scroll"><table class="res"><thead><tr><th>Ano</th><th>Plano</th><th>Natural nominal</th><th>Acidental nominal</th><th>Acidental em R$ de hoje</th><th>Custo acumulado</th></tr></thead><tbody id="annual"></tbody></table></div><button type="button" id="csv">Baixar CSV dos seguros</button></details></details>
+<details class="card"><summary>Entenda as premissas</summary><p class="quiet">Estas são as regras da conta. Elas ajudam a interpretar o resultado, mas não substituem as garantias escritas na proposta e na apólice.</p><ul class="read">
+<li>Pagamento e cobertura têm prazos separados. Vitalícia somente com confirmação na apólice. O adicional acidental termina na vigência informada; só é prorrogado quando você escolhe simular renovação.</li>
+<li>Morte acidental = básica ativa + adicional ativo. O modelo considera que a básica também cobre acidente. Confira exclusões e carências no contrato.</li>
+<li>O custo usa o prêmio mensal total pelo prazo de pagamento, com reajustes anuais. Sem o preço de cada cobertura, ele não diminui automaticamente quando um adicional termina. Trata-se de orçamento hipotético; a renovação pode exigir novos prêmios.</li>
+<li>Taxas opcionais em branco são consideradas zero; adicional em branco significa sem adicional. A vigência básica em branco é temporária, nunca vitalícia. Sugestões não entram nos cálculos.</li>
+<li>IOF só é acrescentado se você informar a alíquota e escolher acrescentar. Se já estiver no valor total, não é cobrado novamente. Não incide como novo desconto da indenização neste modelo.</li>
+<li>Taxas do seguro já embutidas são apenas destacadas dentro da mensalidade, sem somar de novo. Taxas cobradas por fora aumentam o desembolso. O percentual incide na mensalidade inicial e soma-se ao encargo fixo; ambos acompanham os reajustes do prêmio. O IOF adicional é calculado sobre esse subtotal. Confira a base efetiva na proposta.</li>
+<li>Capital por morte tem IR isento na regra consultada. Resgate em vida depende da tabela contratual: informe bruto, base tributável, alíquota e deduções separadamente. Não somamos resgate e indenização.</li>
+<li>Valor de hoje = capital nominal ÷ (1 + inflação)<sup>anos</sup>. Capitais são reajustados a cada aniversário; o custo acumula 12 parcelas por ano completo. Aumento por idade é apenas aproximação anual, não tabela atuarial.</li>
+<li>No investimento, cada parcela é aplicada no fim do mês e rende pelos meses restantes. Os aportes param quando terminariam os pagamentos do seguro; o saldo continua rendendo até o ano da análise. Se a análise for anterior à quitação, só entram as parcelas vencidas até ali.</li>
+<li>O rendimento informado é nominal e bruto. Custos anuais do investimento reduzem o saldo mensalmente; a taxa de entrada é retirada de cada aporte; o encargo mensal sai do saldo disponível. IR incide apenas sobre o ganho positivo de cada aporte, líquido desses custos, como aproximação. Não há restituição de IR em perdas.</li>
+<li>Para CDB e Tesouro, a tabela de IR usa o tempo de cada aporte: 22,5% até 180 dias, 20% até 360, 17,5% até 720 e 15% acima disso. Usamos meses de 30 dias, sem calendário real. Como a simulação só mede meses completos, aportes com rendimento têm pelo menos 30 dias e não há IOF de curto prazo. No modo manual, você define o IR; isenção só vale para produtos e investidores elegíveis.</li>
+<li>Não simulamos vencimentos, cupons, reinvestimentos, come-cotas, oscilações, liquidez ou regras especiais de custódia. Informe o custo anual efetivo adequado ao seu investimento. Rentabilidade constante não é garantia; o saldo pode cair com custos elevados.</li>
+<li>Seguro não é poupança: pode proteger desde o início da vigência, mas só paga a indenização em sinistro coberto. Investimento é patrimônio acumulado aos poucos. O saldo e a indenização são alternativas, não valores para somar. A ferramenta não decide por você se deve contratar ou deixar de contratar seguro.</li>
+</ul><p class="quiet">Fontes: <a href="https://www.gov.br/susep/pt-br/assuntos/meu-futuro-seguro/seguros-previdencia-e-capitalizacao/seguros/seguro-de-vida-e-acidentes-pessoais">SUSEP · seguros</a>, <a href="https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=57670&amp;visao=anotado">Receita · indenização por morte</a>, <a href="https://normas.receita.fazenda.gov.br/sijut2consulta/link.action?idAto=67494">Receita · IR de renda fixa</a>, <a href="https://www.gov.br/receitafederal/pt-br/assuntos/meu-imposto-de-renda/preenchimento/manual-mir/rendimentos/rendimentos-do-capital">Receita · rendimentos isentos</a> e <a href="https://www.tesourodireto.com.br/sobre-o-tesouro/regras-e-regulamento">Tesouro Direto · custos e IOF</a>. Consulta: 03/11/2026.</p></details>
+<p class="quiet">Simulação educativa. Confirme vigências, reajustes, exclusões e resgate na apólice.</p>
+<nav class="seealso"><span class="lbl">Veja também</span><a href="index.html">Todos os simuladores</a><a href="comparador-investimentos.html">Investimentos</a><a href="reserva.html">Reserva de emergência</a></nav>
+<footer>Na Ponta do Lápis · @juanpablodsc</footer></main><script>'use strict';
+const $=id=>document.getElementById(id);
+const money=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const colors=['#3E7C6B','#4B6C86','#9E3B26'];
+let count=2,active=[],projection=[],investments=[];
+function field(i,key,label,suggestion,max=1e9,step='0.01',hint=''){
+ return `<div class="field"><label for="p${i}-${key}">${label}</label><input id="p${i}-${key}" data-key="${key}" type="number" min="0" max="${max}" step="${step}" placeholder="ex.: ${suggestion}">${hint?`<div class="hint">${hint}</div>`:''}</div>`;
+}
+function select(i,key,label,options){return `<div class="field"><label for="p${i}-${key}">${label}</label><select id="p${i}-${key}" data-key="${key}"><option value="">Selecione, se aplicável</option>${options.map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select></div>`;}
+function planHTML(i){return `<section class="card plan" data-plan="${i}"><h2 style="color:${colors[i]}">Plano ${i+1}</h2><div class="plan-grid">
+<div class="field"><label for="p${i}-name">Nome (opcional)</label><input id="p${i}-name" data-key="name" maxlength="60" placeholder="ex.: Seguro A"></div>
+${field(i,'premium','Mensalidade total (R$)','400')}
+${field(i,'basic','Básica: morte natural e acidental (R$)','500000',1e9,'0.01','Valor pago nas duas causas de morte. Use zero se o plano cobrir apenas acidente.')}
+${field(i,'pay','Por quantos anos você paga?','20',100,1)}
+${field(i,'term','Duração: morte natural e básica acidental (anos)','20',100,1)}
+${field(i,'extra','Adicional só por morte acidental (R$)','350000',1e9,'0.01','Soma-se à básica apenas em caso de acidente, enquanto estiver ativo.')}
+${field(i,'extraTerm','Duração: adicional de morte acidental (anos)','5',100,1)}
+</div><details class="advanced"><summary>Taxas e encargos do seguro (opcional)</summary><p class="quiet">A proposta pode incluir custos dentro da parcela ou cobrar valores extras. Informe onde eles entram para não contar a mesma taxa duas vezes. Se não preencher, nenhuma taxa será estimada.</p><div class="plan-grid">
+${select(i,'chargeMode','Como são cobradas as taxas?',[['included','Já embutidas na mensalidade'],['add','Cobradas por fora da mensalidade']])}
+${field(i,'chargeRate','Taxas sobre a parcela inicial (%)','2',100)}
+${field(i,'chargeFixed','Encargo fixo mensal inicial (R$)','10',1e9,'0.01','Informe apenas custos que não estejam no percentual acima.')}
+${select(i,'iofMode','IOF no valor total',[['included','Já incluído'],['add','Acrescentar ao prêmio']])}
+${field(i,'iof','IOF a acrescentar (%)','0,38',100)}
+</div></details><details class="advanced"><summary>Reajustes, vigência e resgate (opcional)</summary><p class="quiet">Reajuste é o aumento anual do valor pago ou da indenização. Taxas vazias = zero. Cobertura vitalícia e renovação precisam estar previstas na proposta.</p><div class="plan-grid">
+${select(i,'life','Tipo de vigência básica',[['term','Temporária'],['whole','Vitalícia confirmada na apólice']])}
+${select(i,'renew','Renovar adicional de morte acidental?',[['no','Não renovar'],['yes','Sim · hipótese sem garantia']])}
+${field(i,'renewUntil','Renovar até o ano','20',100,1)}
+${field(i,'capitalRate','Reajuste do capital (% a.a.)','5',30,'0.1')}
+${field(i,'premiumRate','Reajuste da mensalidade (% ao ano)','5',30,'0.1')}
+${field(i,'ageRate','Aumento por idade (% a.a.)','0',30,'0.1')}
+</div><details class="advanced"><summary>Informar resgate em vida</summary><p class="quiet">Use a tabela contratual para o ano da comparação. Sem informação, o resgate não é estimado.</p><div class="plan-grid">
+${field(i,'redeem','Resgate bruto no ano escolhido (R$)','30000',1e12)}
+${field(i,'basis','Base tributável do resgate (R$)','5000',1e12)}
+${field(i,'tax','IR sobre a base (%)','15',100,'0.1')}
+${field(i,'fee','Outras deduções (R$)','0',1e12)}
+</div></details></details>${i===2?'<button type="button" id="remove">Remover plano</button>':''}</section>`;}
+const investmentTypes=[{id:'cdb',name:'CDB',suggestion:'10',tax:'reg',explain:'IR regressivo: cai conforme o tempo de cada aporte.'},{id:'tesouro',name:'Tesouro Direto',suggestion:'9',tax:'reg',explain:'IR regressivo. Informe uma taxa nominal anual total e o custo efetivo de custódia.'},{id:'lci',name:'LCI / LCA',suggestion:'8',tax:'exempt',explain:'IR isento para pessoa física elegível; verifique prazo e liquidez.'},{id:'poupanca',name:'Poupança',suggestion:'6',tax:'exempt',explain:'IR isento para pessoa física. Use uma estimativa anual; não projetamos a regra da Selic/TR.'},{id:'custom',name:'Outro investimento',suggestion:'10',tax:'manual',explain:'Informe uma taxa anual e uma alíquota manual. Fundos e renda variável podem ter regras não simuladas aqui.'}];
+function investmentHTML(){return investmentTypes.map(o=>`<div class="advanced"><label style="font-weight:600"><input type="checkbox" id="inv-${o.id}" data-investment="${o.id}" aria-controls="inv-fields-${o.id}" aria-expanded="false"> ${o.name}</label><div id="inv-fields-${o.id}" hidden><p class="quiet">${o.explain}</p><div class="plan-grid">${field('inv-'+o.id,'return','Rentabilidade bruta nominal (% ao ano)',o.suggestion,100,'0.1')}${field('inv-'+o.id,'annualFee','Custos sobre o saldo (% ao ano)','0,2',99,'0.01','Custódia, administração e outras taxas anuais. Vazio = zero.')}${field('inv-'+o.id,'entryFee','Taxa sobre cada aporte (%)','0',100)}${field('inv-'+o.id,'monthlyFee','Encargo mensal do investimento (R$)','0',1e9)}${select('inv-'+o.id,'taxMode','Imposto de Renda',[['product','Regra do produto: '+(o.tax==='reg'?'regressivo por aporte':o.tax==='exempt'?'isento':'informar manualmente')],['manual','Alíquota manual sobre o ganho']])}${field('inv-'+o.id,'ir','IR manual sobre o ganho (%)','15',100,'0.1')}</div><p class="quiet">IR vazio usa a regra indicada acima, exceto “Outro investimento”, que exige alíquota. Não há IOF na projeção: os aportes que rendem ficam aplicados por pelo menos 30 dias. O aporte do último mês ainda não rende.</p></div></div>`).join('');}
+function init(){count=2;$('plans').innerHTML=planHTML(0)+planHTML(1);$('investment-options').innerHTML=investmentHTML();$('investment-options').querySelectorAll('input[type="number"],select').forEach(e=>e.disabled=true);$('add').disabled=false;clearResults();}
+function clearResults(){active=[];projection=[];investments=[];$('charts-panel').hidden=true;$('investment-results').hidden=true;$('results').innerHTML='<p class="empty">Preencha os dados e clique em comparar.</p>';}
+function payment(p,y){
+ const growth=((1+p.premiumRate/100)*(1+p.ageRate/100))**y;
+ const base=p.premium*growth;
+ const charges=(p.premium*(p.chargeRate||0)/100+(p.chargeFixed||0))*growth;
+ const subtotal=base+(p.chargeMode==='add'?charges:0);
+ const iof=p.iofMode==='add'?subtotal*p.iof/100:0;
+ return {total:subtotal+iof,charges,iof};
+}
+function snapshot(p,t,inflation){
+ const natural=(p.life==='whole'||t<p.term)?p.basic*(1+p.capitalRate/100)**t:0;
+ const end=p.renew==='yes'?p.renewUntil:p.extraTerm;
+ const accident=natural+(t<end?p.extra*(1+p.capitalRate/100)**t:0);
+ let cost=0,charges=0,iof=0;for(let y=0;y<Math.min(t,p.pay);y++){const v=payment(p,y);cost+=12*v.total;charges+=12*v.charges;iof+=12*v.iof;}
+ return {t,natural,accident,realNatural:natural/(1+inflation/100)**t,realAccident:accident/(1+inflation/100)**t,cost,charges,iof};
+}
+function irRate(days){return days<=180?.225:days<=360?.20:days<=720?.175:.15;}
+function investmentSeries(p,o,t,inflation){
+ const months=t*12,last=Math.min(months,p.pay*12),series=[{t:0,contributed:0,beforeTax:0,net:0,real:0,ir:0,costs:0,gain:0}];
+ const rg=(1+o.rate/100)**(1/12),keep=(1-o.annualFee/100)**(1/12);
+ let lots=[],contributed=0,costs=0;
+ for(let month=1;month<=months;month++){
+  for(const lot of lots){const gross=lot.value*rg;const fee=gross*(1-keep);lot.value=gross-fee;costs+=fee;}
+  if(month<=last){const amount=payment(p,Math.floor((month-1)/12)).total;const entry=amount*o.entryFee/100;contributed+=amount;costs+=entry;lots.push({principal:amount,value:amount-entry,month});}
+  const balance=lots.reduce((s,l)=>s+l.value,0);
+  if(balance>0&&o.monthlyFee>0){const fee=Math.min(balance,o.monthlyFee);lots.forEach(l=>l.value*=1-fee/balance);costs+=fee;}
+  if(month%12===0){
+   let ir=0;for(const lot of lots){const gain=Math.max(0,lot.value-lot.principal);const rate=o.tax==='reg'?irRate((month-lot.month)*30):o.tax==='manual'?o.ir/100:0;ir+=gain*rate;}
+   const beforeTax=lots.reduce((s,l)=>s+l.value,0),net=beforeTax-ir,year=month/12;
+   series.push({t:year,contributed,beforeTax,net,real:net/(1+inflation/100)**year,ir,costs,gain:net-contributed});
+  }
+ }
+ return series;
+}
+function investmentSnapshot(p,o,t,inflation){return investmentSeries(p,o,t,inflation)[t];}
+function redemption(p){if(p.redeem===null)return null;return p.redeem-p.basis*p.tax/100-p.fee;}
+function read(){
+ const error=message=>{$('errors').textContent=message;clearResults();return false;};
+ const inputs=[...$('sim').querySelectorAll('input')];
+ const bad=inputs.find(e=>!e.disabled&&!e.checkValidity());
+ if(bad)return error('Revise '+document.querySelector(`label[for="${bad.id}"]`).textContent+': use um valor válido dentro dos limites.');
+ active=[];
+ for(const el of document.querySelectorAll('[data-plan]')){
+ const index=+el.dataset.plan;const p={index};
+ const fields=[...el.querySelectorAll('[data-key]')];
+ if(!fields.some(f=>f.value.trim()!==''))continue;
+ for(const f of fields)p[f.dataset.key]=f.type==='number'?(f.value===''?null:Number(f.value)):f.value.trim();
+ p.name=p.name||'Plano '+(index+1);
+ if(p.premium===null||p.basic===null||p.pay===null)return error(p.name+': preencha mensalidade, cobertura básica e prazo de pagamento.');
+ p.life=p.life||'term';
+ if(p.basic>0&&p.life!=='whole'&&!(p.term>0))return error(p.name+': informe a duração da cobertura básica ou confirme a vigência vitalícia em ajustes.');
+ if(p.basic===0)p.term=0;
+ p.extra=p.extra||0;
+ if(p.extra>0&&!(p.extraTerm>0))return error(p.name+': informe a duração do adicional de morte acidental.');
+ p.renew=p.renew||'no';
+ if(p.renew==='yes'&&(!(p.extra>0)||!(p.renewUntil>p.extraTerm)))return error(p.name+': a renovação exige adicional e um ano final maior que sua duração inicial.');
+ if(p.iofMode==='add'&&p.iof===null)return error(p.name+': informe a alíquota do IOF, inclusive zero, para acrescentá-lo.');
+ if(p.iof>0&&p.iofMode!=='add')return error(p.name+': para aplicar a alíquota, selecione “Acrescentar ao prêmio”; caso já incluída, deixe a alíquota vazia.');
+ if((p.chargeRate>0||p.chargeFixed>0)&&!p.chargeMode)return error(p.name+': informe se as taxas estão embutidas ou são cobradas por fora.');
+ if(p.chargeMode==='included'&&p.premium*(p.chargeRate||0)/100+(p.chargeFixed||0)>p.premium)return error(p.name+': taxas embutidas não podem superar a mensalidade total.');
+ if(p.redeem!==null&&(p.basis===null||p.tax===null))return error(p.name+': para resgate, informe base tributável e IR, inclusive zero.');
+ if(p.redeem===null&&(p.basis!==null||p.tax!==null||p.fee!==null))return error(p.name+': informe também o valor bruto do resgate.');
+ for(const k of ['capitalRate','premiumRate','ageRate','iof','basis','tax','fee','chargeRate','chargeFixed'])p[k]=p[k]??0;
+ if(p.redeem!==null&&(p.basis>p.redeem||p.basis*p.tax/100+p.fee>p.redeem))return error(p.name+': a base e as deduções não podem ultrapassar o resgate.');
+ active.push(p);
+ }
+ if(!active.length)return error('Preencha ao menos um plano. As sugestões em cinza não são usadas no cálculo.');
+ investments=[];
+ for(const o of investmentTypes){
+  if(!$('inv-'+o.id).checked)continue;
+  const get=k=>{const v=$('pinv-'+o.id+'-'+k).value;return v===''?null:Number(v);};
+  const rate=get('return'),mode=$('pinv-'+o.id+'-taxMode').value;
+  if(rate===null)return error(o.name+': informe a rentabilidade esperada, inclusive zero.');
+  const tax=mode==='manual'?'manual':o.tax,ir=get('ir');
+  if(tax==='manual'&&ir===null)return error(o.name+': informe a alíquota de IR, inclusive zero.');
+  if(tax!=='manual'&&ir!==null)return error(o.name+': para usar o IR digitado, selecione “Alíquota manual”.');
+  investments.push({...o,rate,tax,ir:ir??0,annualFee:get('annualFee')??0,entryFee:get('entryFee')??0,monthlyFee:get('monthlyFee')??0});
+ }
+ $('errors').textContent='';return true;
+}
+function chart(title,key,horizon){
+ const w=740,h=210,l=78,r=18,top=16,bottom=30;
+ const max=Math.max(1,...projection.flatMap(s=>s.map(v=>v[key])));
+ const x=t=>l+t/horizon*(w-l-r),y=v=>h-bottom-v/max*(h-top-bottom);
+ let svg=`<h3 class="chart-title">${title}</h3><svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="${title}; consulte os valores na tabela anual"><title>${title}</title>`;
+ for(let i=0;i<=4;i++){let v=max*i/4;svg+=`<path d="M${l} ${y(v)}H${w-r}" stroke="#C9D2CF"/><text x="${l-7}" y="${y(v)+4}" text-anchor="end" fill="#3D544D" font-size="11">${Intl.NumberFormat('pt-BR',{notation:'compact',maximumFractionDigits:1}).format(v)}</text>`;}
+ for(let t=0;t<=horizon;t+=Math.max(1,Math.ceil(horizon/6)))svg+=`<text x="${x(t)}" y="${h-8}" text-anchor="middle" fill="#3D544D" font-size="11">${t}a</text>`;
+ projection.forEach((s,i)=>{let d=`M${x(0)} ${y(s[0][key])}`;for(let t=1;t<s.length;t++)d+=key==='cost'?` L${x(t)} ${y(s[t][key])}`:` H${x(t)} V${y(s[t][key])}`;svg+=`<path d="${d}" fill="none" stroke="${colors[active[i].index]}" stroke-width="2.5"><title>${esc(active[i].name)}</title></path>`;});return svg+'</svg>';
+}
+function update(){
+ if(!read())return;
+ const horizon=+$('horizon').value,inflation=+$('inflation').value;
+ projection=active.map(p=>Array.from({length:horizon+1},(_,t)=>snapshot(p,t,inflation)));
+ const ends=projection.map(s=>s[horizon]);
+ const row=(label,values)=>`<tr><th scope="row">${label}</th>${values.map(v=>`<td>${v}</td>`).join('')}</tr>`;
+ $('results').innerHTML=`<h2>Daqui a ${horizon} anos</h2><p class="quiet">Inflação: ${inflation.toLocaleString('pt-BR')}% a.a. · reais de hoje mostram o poder de compra.</p><div class="scroll"><table class="res summary-table"><thead><tr><th>Comparação</th>${active.map(p=>`<th scope="col" style="color:${colors[p.index]}">${esc(p.name)}</th>`).join('')}</tr></thead><tbody>`+
+ row('Desembolso mensal inicial¹',active.map(p=>money(payment(p,0).total)))+
+ row('Custo total até esse ano¹',ends.map(r=>money(r.cost)))+
+ row('Taxas identificadas dentro desse custo',ends.map(r=>money(r.charges)))+
+ row('IOF acrescentado dentro desse custo',ends.map(r=>money(r.iof)))+
+ row('Morte natural · nominal',ends.map(r=>money(r.natural)))+
+ row('Morte natural · R$ de hoje',ends.map(r=>money(r.realNatural)))+
+ row('Morte acidental · nominal',ends.map(r=>money(r.accident)))+
+ row('Morte acidental · R$ de hoje',ends.map(r=>money(r.realAccident)))+
+ row('Fim da cobertura básica',active.map(p=>p.life==='whole'?'Vitalícia informada':p.term+' anos'))+
+ row('Fim do adicional acidental',active.map(p=>p.extra?(p.renew==='yes'?p.renewUntil+' anos (hipótese)':p.extraTerm+' anos'):'Sem adicional'))+
+ (active.some(p=>p.redeem!==null)?row('Resgate líquido² · no ano escolhido',active.map(p=>{const n=redemption(p);return n===null?'Não informado':money(n);}))+row('Resgate líquido² · R$ de hoje',active.map(p=>{const n=redemption(p);return n===null?'Não informado':money(n/(1+inflation/100)**horizon);})): '')+
+ '</tbody></table></div><p class="result-note">¹ Custo hipotético do pacote integral, sem rateio por cobertura. Taxas embutidas não são somadas de novo; campos vazios não estimam encargos. ² Resgate informado pelo usuário, separado da indenização.</p>'+
+ (ends.some(r=>r.natural===0||r.accident===0)?'<p class="warning">Cobertura encerrada no ano escolhido aparece como R$ 0. Pagamento quitado não significa cobertura vitalícia.</p>':'')+
+ (active.some(p=>(p.life==='whole'||p.term>p.pay||p.renew==='yes'))?'<p class="quiet">Confirme na apólice a proteção após o fim dos pagamentos e o custo de eventuais renovações.</p>':'');
+ $('charts-panel').hidden=false;
+ $('coverage-chart').innerHTML=chart('Morte natural · R$ de hoje','realNatural',horizon);
+ $('accident-chart').innerHTML=chart('Morte acidental · R$ de hoje','realAccident',horizon);
+ $('cost-chart').innerHTML=chart('Custo acumulado · R$ nominais','cost',horizon);
+ $('legend').innerHTML=active.map(p=>`<span style="--series:${colors[p.index]}">${esc(p.name)}</span>`).join('');
+ $('annual').innerHTML=Array.from({length:horizon+1},(_,t)=>active.map((p,i)=>{const r=projection[i][t];return `<tr><td>${t}</td><td>${esc(p.name)}</td>${[r.natural,r.accident,r.realAccident,r.cost].map(v=>`<td class="n">${money(v)}</td>`).join('')}</tr>`;}).join('')).join('');
+ renderInvestments(horizon,inflation);
+}
+function renderInvestments(horizon,inflation){
+ $('investment-results').hidden=!investments.length;$('investment-chart').innerHTML='';
+ if(!investments.length)return;
+ const schedules=active.map(p=>investments.map(o=>investmentSeries(p,o,horizon,inflation)));
+ const tableRow=(label,values)=>`<tr><th scope="row">${label}</th>${values.map(v=>`<td>${v}</td>`).join('')}</tr>`;
+ let content='<h2>Contratar ou investir as parcelas?</h2><p class="quiet">O seguro oferece uma indenização se ocorrer uma morte coberta. Ao investir, você teria apenas o saldo já acumulado. Abaixo, cada alternativa usa o mesmo dinheiro e o mesmo prazo de pagamento do seguro correspondente.</p>';
+ for(let i=0;i<active.length;i++){
+  const p=active[i],s=projection[i][horizon],rows=schedules[i].map(s=>s[horizon]);
+  content+=`<h3>Parcelas de ${esc(p.name)}</h3><p class="quiet">Aportes por ${Math.min(p.pay,horizon)} anos, até R$ ${money(s.cost).replace('R$','').trim()} no total. Depois do fim dos aportes, o saldo segue rendendo até o ano ${horizon}.</p><div class="scroll"><table class="res summary-table"><thead><tr><th>No ano ${horizon}</th>${investments.map(o=>`<th>${esc(o.name)}</th>`).join('')}</tr></thead><tbody>`+
+  tableRow('Rendimento bruto esperado',investments.map(o=>o.rate.toLocaleString('pt-BR')+'% a.a.'))+
+  tableRow('Regra de IR',investments.map(o=>o.tax==='reg'?'Regressivo por aporte':o.tax==='exempt'?'Isento':o.ir+'% sobre ganho'))+
+  tableRow('Custos: saldo / aporte / mensal',investments.map(o=>`${o.annualFee}% a.a. / ${o.entryFee}% / ${money(o.monthlyFee)}`))+
+  tableRow('Saldo antes do IR',rows.map(r=>money(r.beforeTax)))+
+  tableRow('Custos já retirados do investimento',rows.map(r=>money(r.costs)))+
+  tableRow('IR sobre os rendimentos',rows.map(r=>money(r.ir)))+
+  tableRow('Saldo líquido disponível',rows.map(r=>money(r.net)))+
+  tableRow('Saldo líquido · R$ de hoje',rows.map(r=>money(r.real)))+
+  tableRow('Ganho líquido além dos aportes',rows.map(r=>money(r.gain)))+
+  tableRow('Seguro: morte natural · R$ de hoje',rows.map(()=>money(s.realNatural)))+
+  tableRow('Seguro: morte acidental · R$ de hoje',rows.map(()=>money(s.realAccident)))+
+  tableRow('Diferença: saldo − proteção natural¹',rows.map(r=>money(r.real-s.realNatural)))+
+  tableRow('Diferença: saldo − proteção acidental¹',rows.map(r=>money(r.real-s.realAccident)))+
+  '</tbody></table></div><details class="advanced"><summary>Ver saldo do investimento em cada ano</summary><p class="quiet">Mostra quanto sobraria após custos e IR se você retirasse tudo em cada aniversário. São retiradas hipotéticas independentes; a simulação principal mantém o dinheiro aplicado.</p><div class="scroll"><table class="res"><thead><tr><th>Ano</th><th>Aplicação</th><th>Aportes</th><th>Custos retirados</th><th>IR</th><th>Saldo líquido</th><th>R$ de hoje</th></tr></thead><tbody>'+
+  Array.from({length:horizon+1},(_,t)=>investments.map((o,j)=>{const r=schedules[i][j][t];return `<tr><td>${t}</td><td>${esc(o.name)}</td>${[r.contributed,r.costs,r.ir,r.net,r.real].map(v=>`<td class="n">${money(v)}</td>`).join('')}</tr>`;}).join('')).join('')+'</tbody></table></div></details>';
+ }
+ content+='<p class="quiet">¹ Positivo: o saldo projetado seria maior que aquela indenização no ano escolhido. Negativo: seria menor. Se a cobertura já terminou, a referência é zero; isso não mede a proteção que o seguro ofereceu antes.</p><p class="warning">Saldo disponível não é promessa de indenização. Nos primeiros meses, o investimento ainda é pequeno; um seguro vigente pode oferecer um capital muito maior. Patrimônio acumulado e proteção familiar atendem a necessidades diferentes.</p>';
+ $('investment-results').innerHTML=content;
+ // Annual snapshots are independent hypothetical redemptions; taxes do not deplete later years.
+ let graphics='<h3 class="chart-title">Investir ou proteger · R$ de hoje</h3><p class="quiet">Em cada gráfico, linhas contínuas são investimentos e linhas tracejadas são as indenizações do seguro. Compare a proteção nos anos iniciais, além do saldo final.</p>';
+ const invColors=['#12463B','#4B6C86','#B07D2B','#9E3B26','#7B567D'];
+ active.forEach((p,i)=>{
+  const series=investments.map((o,j)=>({name:o.name,color:invColors[j],values:schedules[i][j].map(r=>r.real)}));
+  series.push({name:'Seguro · morte natural',color:'#3E7C6B',dashed:true,values:projection[i].map(r=>r.realNatural)});
+  series.push({name:'Seguro · morte acidental',color:'#9E3B26',dashed:true,values:projection[i].map(r=>r.realAccident)});
+  graphics+=comparisonChart(esc(p.name),series,horizon);
+ });
+ $('investment-chart').innerHTML=graphics;
+}
+function comparisonChart(title,series,horizon){
+ const w=740,h=220,l=78,r=18,top=16,b=30;
+ const max=Math.max(1,...series.flatMap(s=>s.values)),x=t=>l+t/horizon*(w-l-r),y=v=>h-b-v/max*(h-top-b);
+ let svg=`<h3 class="chart-title">${title}</h3><svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Investimentos e proteção de ${title}"><title>Investimentos e proteção</title>`;
+ for(let j=0;j<=4;j++){const v=max*j/4;svg+=`<path d="M${l} ${y(v)}H${w-r}" stroke="#C9D2CF"/><text x="${l-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#3D544D">${Intl.NumberFormat('pt-BR',{notation:'compact',maximumFractionDigits:1}).format(v)}</text>`;}
+ for(let t=0;t<=horizon;t+=Math.max(1,Math.ceil(horizon/6)))svg+=`<text x="${x(t)}" y="${h-8}" text-anchor="middle" font-size="11" fill="#3D544D">${t}a</text>`;
+ series.forEach(s=>{let d=`M${x(0)} ${y(s.values[0])}`;for(let t=1;t<s.values.length;t++)d+=s.dashed?` H${x(t)} V${y(s.values[t])}`:` L${x(t)} ${y(s.values[t])}`;svg+=`<path d="${d}" stroke="${s.color}" stroke-width="2.5" ${s.dashed?'stroke-dasharray="6 4"':''} fill="none"><title>${esc(s.name)}</title></path>`;});
+ return svg+'</svg><div class="legend">'+series.map(s=>`<span style="--series:${s.color}">${esc(s.name)}${s.dashed?' (tracejado)':''}</span>`).join('')+'</div>';
+}
+$('sim').addEventListener('submit',e=>{e.preventDefault();update();});
+$('sim').addEventListener('input',()=>{$('errors').textContent='';clearResults();});
+$('sim').addEventListener('change',e=>{if(e.target.matches('[data-investment]')){const section=$('inv-fields-'+e.target.dataset.investment);section.hidden=!e.target.checked;e.target.setAttribute('aria-expanded',String(e.target.checked));section.querySelectorAll('input,select').forEach(f=>f.disabled=!e.target.checked);}$('errors').textContent='';clearResults();});
+$('add').addEventListener('click',()=>{if(count<3){$('plans').insertAdjacentHTML('beforeend',planHTML(count++));$('add').disabled=true;clearResults();}});
+document.addEventListener('click',e=>{if(e.target.id==='remove'){e.target.closest('[data-plan]').remove();count=2;$('add').disabled=false;clearResults();}});
+$('reset').addEventListener('click',()=>{$('sim').reset();$('errors').textContent='';init();});
+$('csv').addEventListener('click',()=>{
+ if(!projection.length)return;
+ const quote=v=>'"'+String(v).replace(/"/g,'""')+'"';
+ const rows=[['Ano','Plano','Natural nominal','Acidental nominal','Natural real','Acidental real','Custo nominal acumulado']];
+ for(let t=0;t<projection[0].length;t++)active.forEach((p,i)=>{const r=projection[i][t];rows.push([t,/^[=+@\-]/.test(p.name)?"'"+p.name:p.name,...[r.natural,r.accident,r.realNatural,r.realAccident,r.cost].map(v=>v.toFixed(2).replace('.',','))]);});
+ const url=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(quote).join(';')).join('\r\n')],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='seguro-vida.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+init();
+</script></body></html>
