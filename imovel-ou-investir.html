@@ -44,6 +44,8 @@ h1 em{font-style:normal;color:#E7B968;}
 .seg button.on{background:var(--ink);color:#fff;}
 .subhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);margin:16px 0 6px;}
 .divider{border:none;border-top:1px dashed var(--line);margin:16px 0 6px;}
+.livecalc{background:#fff;border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:10px;padding:11px 13px;margin:12px 0 2px;font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+.livecalc b{color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:15px;}
 .inv{display:grid;grid-template-columns:1.2fr 1fr;gap:8px;align-items:center;margin:8px 0;}
 .inv .nm{display:flex;flex-direction:column;gap:2px;} .inv .nm b{font-size:13.5px;font-weight:600;} .inv .nm span{font-size:10.5px;color:var(--muted);font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em;}
 .inv .affix input{width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 52px 9px 10px;font-size:14px;color:var(--ink);font-family:"IBM Plex Mono",monospace;}
@@ -148,6 +150,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
         <div class="affix"><input class="num" id="tr" type="number" inputmode="decimal" min="0" max="30" step="0.1" placeholder="ex: 1,5"><span class="u">% a.a.</span></div>
         <div class="hint">financiamentos da Caixa e de bancos corrigem o saldo pela TR. Em branco, sem correção.</div></div>
     </div>
+    <div class="livecalc" id="parcelaLive" aria-live="polite">A parcela aparece aqui quando você preencher preço, juros e prazo.</div>
   </div>
 
   <div class="eyebrow">2 · O aluguel e os custos de ser dono</div>
@@ -396,8 +399,25 @@ const yrs=m=>{const a=Math.floor(m/12), r=m%12; return (a?a+(a===1?' ano':' anos
 
 $('prodlist').innerHTML=PRODS.map(o=>`<div class="inv"><div class="nm"><b>${o.nome}</b><span>${o.tag}</span></div><div class="affix"><input id="r_${o.id}" type="number" inputmode="decimal" min="0" step="0.1" placeholder="ex: ${o.ph}" aria-label="Rendimento de ${o.nome}"><span class="u">% a.a.</span></div></div>`).join('');
 
+// parcela do 1º mês, mostrada logo abaixo dos dados do financiamento
+function parcelaLive(){
+  const price=val('price'), down=val('down')||0, rate=val('rate'), term=val('term'), ins=val('ins')||0, tr=val('tr')||0;
+  const el=$('parcelaLive');
+  if(!(price>0&&rate!==null&&rate>=0&&term>0)||down>=price){ el.innerHTML='A parcela aparece aqui quando você preencher preço, juros e prazo.'; return; }
+  const n=Math.round(term), i=state.rateUnit==='mensal'?rate/100:Math.pow(1+rate/100,1/12)-1;
+  const debt=(price-down)*Math.pow(1+tr/100,1/12);
+  const juros=debt*i;
+  const parc=state.sys==='sac'?debt/n+juros:(i===0?debt/n:debt*i/(1-Math.pow(1+i,-n)));
+  const total=parc+ins;
+  let txt=`Valor financiado: <b>${BRL(price-down)}</b><br>${state.sys==='sac'?'1ª parcela':'Parcela'}: <b>${BRL(parc)}</b>`;
+  if(ins>0) txt+=` + seguros e tarifa ${BRL(ins)} = <b>${BRL(total)}</b> por mês`;
+  if(state.sys==='sac'){ const ult=(price-down)/n*(1+i); txt+=`<br><span class="small">No SAC a parcela cai todo mês, até cerca de ${BRL(ult)} na última${tr>0?', sem contar a TR':''}.</span>`; }
+  else if(tr>0) txt+=`<br><span class="small">Na PRICE a parcela é fixa, mas a TR a reajusta um pouco todo mês.</span>`;
+  el.innerHTML=txt;
+}
 let current=null;
 function compute(){
+  parcelaLive();
   const p={price:val('price'),down:val('down')||0,buy:val('buy')||0,rate:val('rate'),rateUnit:state.rateUnit,term:val('term'),sys:state.sys,
     ins:val('ins')||0,tr:val('tr')||0,rent:val('rent'),rentg:val('rentg'),vac:val('vac')||0,adm:val('adm')||0,own:val('own')||0,maint:val('maint')||0,
     irr:val('irr')||0,years:val('years'),infl:val('infl'),appr:val('appr'),sell:val('sell')||0,saleTax:state.saleTax};
