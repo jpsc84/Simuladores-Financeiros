@@ -104,7 +104,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
     <div class="metrics">
       <div class="metric"><div class="t">% da renda comprometida</div><div class="n num" id="m_pct">—</div></div>
       <div class="metric"><div class="t">Máximo financiado</div><div class="n num" id="m_fin">—</div></div>
-      <div class="metric"><div class="t">Com a sua entrada</div><div class="n num" id="m_entrada">—</div></div>
+      <div class="metric"><div class="t">Sua entrada</div><div class="n num" id="m_entrada">—</div></div>
     </div>
     <div class="verdict" id="verdict">Preencha os campos para ver o resultado.</div>
   </div>
@@ -154,7 +154,7 @@ function compute(){
   $('m_pct').textContent = pctComp===null ? '—' : pctComp.toFixed(0)+'%';
   $('m_pct').style.color = (pctComp!==null && pctComp>30) ? 'var(--clay)' : 'var(--ink)';
   $('m_fin').textContent=BRL(financiado);
-  $('m_entrada').textContent=BRL(bem);
+  $('m_entrada').textContent=BRL(entrada);
 
   let msg=`Com uma parcela de <b>${BRL(parcela)}</b>, ${state.forma==='anual'?'a '+taxa+'% ao ano':'a '+taxa+'% ao mês'} em ${n} meses no ${state.sistema.toUpperCase()}, você financia até <b>${BRL(financiado)}</b>. Somando sua entrada de ${BRL(entrada)}, o valor máximo do bem é <span class="hl">${BRL(bem)}</span>.`;
   if(pctComp!==null){

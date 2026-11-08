@@ -99,7 +99,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <div class="hint">preencha para ver o rendimento real, já descontada a inflação</div></div>
     <div class="field"><label>Outras taxas e custos</label>
       <div class="affix"><input class="num" id="taxas" type="number" min="0" step="0.1" value="" placeholder="ex: 0,5"><span class="u">% a.a.</span></div>
-      <div class="hint">spread, corretora, custódia, taxa de administração, IOF em resgates curtos. Se não souber, de 0,3% a 1% ao ano é uma referência; fundos podem passar de 2%.</div></div>
+      <div class="hint">spread, corretora, custódia, taxa de administração. Não é descontado da poupança, que não tem esses custos. Se não souber, de 0,3% a 1% ao ano é uma referência; fundos podem passar de 2%.</div></div>
     <div class="subhead">Taxa anual de cada opção (bruta)</div>
     <div class="inv"><div class="nm"><b>CDB</b><span>tributado</span></div><div class="affix"><input class="num" id="r_cdb" type="number" min="0" step="0.1" placeholder="ex: 12"><span class="u">% a.a.</span></div></div>
     <div class="inv"><div class="nm"><b>Tesouro Direto</b><span>tributado</span></div><div class="affix"><input class="num" id="r_tesouro" type="number" min="0" step="0.1" placeholder="ex: 11,5"><span class="u">% a.a.</span></div></div>
@@ -129,7 +129,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
   <div class="eyebrow">Como ler o resultado</div>
   <div class="card">
     <ul class="read">
-      <li>O imposto sobre CDB, Tesouro e a maioria dos fundos é regressivo: 22,5% até 180 dias, 20% até 360, 17,5% até 720 e 15% acima de 720 dias. Quanto mais tempo aplicado, menos imposto.</li>
+      <li>O imposto sobre CDB, Tesouro e a maioria dos fundos é regressivo: 22,5% até 180 dias, 20% até 360, 17,5% até 720 e 15% acima de 720 dias corridos. Quanto mais tempo aplicado, menos imposto. Resgates antes de 30 dias ainda pagam IOF sobre o rendimento, já incluído na conta.</li>
       <li>Ações têm IR fixo de 15% sobre o ganho, sem tabela regressiva, e ainda contam com isenção nas vendas até certo limite mensal. Fundos variam pelo tipo: os de ações seguem 15%, os de renda fixa e multimercado seguem a regressiva.</li>
       <li>LCI, LCA e poupança são isentas de IR. Por isso uma LCI a 10% pode render mais no bolso que um CDB a 12%, que ainda paga imposto sobre o ganho.</li>
       <li>Renda fixa e renda variável têm níveis de risco diferentes. Ações podem render mais no longo prazo, mas oscilam; a comparação aqui é só de rentabilidade líquida, não de risco. Considere também liquidez, carência e a proteção do FGC, que cobre CDB, LCI e LCA, mas não o Tesouro nem ações.</li>
@@ -155,10 +155,12 @@ const state={unidade:'meses',manTax:'reg'};
 const fmtPrazo=(v,u)=>{const n=v.toLocaleString('pt-BR');return u==='dias'?`${n} ${v===1?'dia':'dias'}`:u==='anos'?`${n} ${v===1?'ano':'anos'}`:`${n} ${v===1?'mês':'meses'}`;};
 
 function irRate(dias){ if(dias<=180)return .225; if(dias<=360)return .20; if(dias<=720)return .175; return .15; }
+const IOF=[96,93,90,86,83,80,76,73,70,66,63,60,56,53,50,46,43,40,36,33,30,26,23,20,16,13,10,6,3];
+function iofRate(dias){ return dias<30 ? IOF[Math.max(1,Math.floor(dias))-1]/100 : 0; }
 
 function compute(){
   const V=val('valor'), prazoVal=val('prazoVal'), un=state.unidade;
-  const dias = un==='dias'? prazoVal : un==='anos'? prazoVal*360 : prazoVal*30;
+  const dias = un==='dias'? prazoVal : un==='anos'? prazoVal*365 : prazoVal*365/12; // dias corridos, como conta a Receita
   const anos = un==='anos'? prazoVal : un==='meses'? prazoVal/12 : prazoVal/365;
   const opts=[
     {nome:'CDB', tax:'reg', rate:val('r_cdb')},
@@ -176,10 +178,12 @@ function compute(){
 
   const ir=irRate(dias);
   active.forEach(o=>{
-    const grossFV=V*Math.pow(1+(o.rate-(val('taxas')||0))/100,anos);
+    const custos = o.nome==='Poupança' ? 0 : (val('taxas')||0); // poupança não tem custos de custódia ou administração
+    const grossFV=V*Math.pow(1+(o.rate-custos)/100,anos);
     const gain=grossFV-V;
     const irEff = o.tax==='reg'? ir : (o.tax==='flat15'? 0.15 : 0);
-    const netGain=gain*(1-irEff);
+    const iof = o.tax==='reg' && gain>0 ? gain*iofRate(dias) : 0; // IOF regressivo em resgates com menos de 30 dias
+    const netGain=(gain-iof)*(1-irEff);
     o.isento = o.tax==='isento';
     o.netFV=V+netGain;
     o.netAnnual=(Math.pow(o.netFV/V,1/anos)-1)*100;

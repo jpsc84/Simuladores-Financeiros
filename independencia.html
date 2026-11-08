@@ -264,7 +264,7 @@ function setEmpty(){
   $('c_tot').textContent=''; $('bar').innerHTML=''; $('split').innerHTML=''; $('warnbox').innerHTML='';
 }
 
-['renda','rentab','inflacao','ir','prazo'].forEach(id=>$(id).addEventListener('input',compute));
+['renda','rentab','inflacao','ir','prazo','taxas'].forEach(id=>$(id).addEventListener('input',compute));
 compute();
 </script>
 </body>

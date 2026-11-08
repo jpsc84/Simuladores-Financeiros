@@ -38,6 +38,9 @@ h1 em{font-style:normal;color:#E7B968;}
 .field .hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
 .affix{position:relative;}.affix .u{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:13px;pointer-events:none;}.affix input{padding-right:44px;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff;}
+.seg button{flex:1;border:none;background:transparent;padding:9px 6px;font-size:13px;cursor:pointer;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;}
+.seg button.on{background:var(--ink);color:#fff;}
 .subhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);margin:8px 0;padding-top:14px;border-top:1px dashed var(--line);}
 .big{padding:2px 0 4px;}.big .k{font-size:12px;color:var(--muted);}
 .big .v{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(30px,8vw,44px);letter-spacing:-.02em;line-height:1.04;margin-top:2px;color:var(--sage);}
@@ -92,6 +95,9 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <div class="affix"><input class="num" id="prevManual" type="number" min="0" step="10" value="" placeholder="deixe em branco para estimar (federal)"><span class="u">R$</span></div>
       <div class="hint">se preencher, usamos esse valor exato. em branco, estimamos pela tabela federal do RPPS 2026</div></div>
 
+    <div class="field"><label>Sua previdência é limitada ao teto do RGPS?</label>
+      <div class="seg" id="seg-teto"><button type="button" data-v="nao" class="on">Não</button><button type="button" data-v="sim">Sim</button></div>
+      <div class="hint">sim para quem entrou após o Funpresp (2013) ou migrou: a contribuição ao RPPS incide só até o teto. Preencher o Funpresp já marca sim.</div></div>
     <div class="subhead">Funpresp (opcional)</div>
     <div class="field"><label>% de aporte ao Funpresp</label>
       <div class="affix"><input class="num" id="funpresp" type="number" min="0" max="8.5" step="0.5" value="" placeholder="ex: 8,5"><span class="u">%</span></div>
@@ -129,21 +135,23 @@ const $=id=>document.getElementById(id);
 const BRL=v=>(isFinite(v)?v:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
 const val=id=>{const x=parseFloat(($(id).value+'').replace(',','.'));return isFinite(x)?x:null;};
 
-// RPPS federal progressivo 2026 (marginal por faixa) — estimativa datada
-const RPPS=[[1518.00,0.075],[2793.88,0.09],[4190.83,0.12],[8475.55,0.14],[16951.10,0.145],[33902.20,0.165],[66079.29,0.19],[Infinity,0.22]];
+// RPPS federal progressivo 2026 (EC 103, art. 11): faixas de 2025 corrigidas pelo reajuste do RGPS (teto 8.157,41 -> 8.475,55); 1ª faixa = salário mínimo
+const RPPS=[[1621.00,0.075],[2902.84,0.09],[4354.27,0.12],[8475.55,0.14],[14514.30,0.145],[29028.57,0.165],[56605.73,0.19],[Infinity,0.22]];
 function contribRPPS(sal){ let ant=0,t=0; for(const [lim,aliq] of RPPS){ if(sal>ant){ t+=(Math.min(sal,lim)-ant)*aliq; ant=lim; } else break; } return t; }
 
 // IRRF mensal 2026 (base -> aliq, deduzir)
 const IRRF=[[2428.80,0,0],[2826.65,0.075,182.16],[3751.05,0.15,394.16],[4664.68,0.225,675.49],[Infinity,0.275,908.73]];
 function impostoTabela(base){ for(const [lim,aliq,ded] of IRRF){ if(base<=lim) return Math.max(0, base*aliq-ded); } return 0; }
 const DEP=189.59, SIMPL=607.20;
+const state={teto:'nao'};
 function redutor(bruto){ if(bruto<=5000) return Infinity; if(bruto<=7350) return Math.max(0,978.62-0.133145*bruto); return 0; }
 
 function compute(){
   const bruto=val('bruto'), dep=val('dep')||0, teto=val('teto')||8475.55, prevManual=val('prevManual'), funpPct=(val('funpresp')||0)/100;
   if(!(bruto>0)){ setEmpty(); return; }
 
-  const prev = (prevManual!==null && prevManual>=0) ? prevManual : contribRPPS(bruto);
+  const limitadoTeto = state.teto==='sim' || funpPct>0; // quem tem Funpresp contribui ao RPPS só até o teto
+  const prev = (prevManual!==null && prevManual>=0) ? prevManual : contribRPPS(limitadoTeto?Math.min(bruto,teto):bruto);
   const salParticip = Math.max(0, bruto-teto);
   const funpresp = salParticip*funpPct;
 
@@ -177,6 +185,7 @@ function compute(){
   $('verdict').innerHTML=msg;
 }
 function setEmpty(){$('r_liquido').textContent='—';$('r_pct').textContent='';$('balbox').innerHTML='';$('verdict').textContent='Preencha o salário bruto para ver o resultado.';}
+document.querySelectorAll('#seg-teto button').forEach(b=>b.addEventListener('click',()=>{state.teto=b.dataset.v;document.querySelectorAll('#seg-teto button').forEach(x=>x.classList.toggle('on',x===b));compute();}));
 document.querySelectorAll('input').forEach(el=>el.addEventListener('input',compute));
 compute();
 </script>

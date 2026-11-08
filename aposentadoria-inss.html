@@ -122,7 +122,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
   <div class="card">
     <ul class="read">
       <li>A ferramenta calcula as regras que valem para você e mostra qual chega primeiro. Quem já contribuía antes da reforma compara as cinco regras de transição com a permanente; quem começou depois só tem a regra permanente.</li>
-      <li>Regra de pontos e pedágio de 50% pagam 100% da média salarial, sem redutor. Transição por idade, idade mínima progressiva, pedágio de 100% e regra permanente usam 60% da média, mais 2% por ano de contribuição acima de 20 anos (homem) ou 15 anos (mulher), até 100%.</li>
+      <li>Só o pedágio de 100% paga 100% da média salarial sem redutor. O pedágio de 50% paga 100% da média multiplicada pelo fator previdenciário, que costuma reduzir o valor (na tabela, marcado com *, mostrado antes do fator). As demais regras, inclusive a de pontos, usam 60% da média mais 2% por ano de contribuição acima de 20 anos (homem) ou 15 anos (mulher), até 100%.</li>
       <li>O benefício nunca fica abaixo do piso, um salário mínimo, nem acima do teto do INSS, mesmo que a média seja maior.</li>
       <li>O pedágio de 50% só aparece na lista se em 13/11/2019 faltavam até 2 anos para completar o tempo da regra antiga (30 anos mulher, 35 homem). Fora dessa janela, ele não é uma opção.</li>
       <li>Para a regra de pontos e a idade mínima progressiva, a exigência sobe todo ano. A ferramenta já projeta essa subida para achar o ano em que você bate a meta, mas quanto mais distante no futuro, menos precisa é a estimativa.</li>
@@ -201,24 +201,24 @@ function compute(){
     const kT = Math.max(0, idadeReqT-idade, tempoReqT-tempo);
     rotas.push({nome:'Transição por idade', anos:kT, ...comRedutor(tempo+kT)});
 
-    // 2) regra de pontos: simulação ano a ano, respeitando o teto de pontos. Paga 100% da média, sem redutor.
+    // 2) regra de pontos (EC 103, art. 15): benefício pelo art. 26, 60% + 2% por ano acima de 20 (H) / 15 (M)
     const kPontos = anosParaPontos(idade,tempo,M);
-    rotas.push({nome:'Regra de pontos', anos:kPontos, ...semRedutor()});
+    rotas.push({nome:'Regra de pontos', anos:kPontos, ...comRedutor(tempo+kPontos)});
 
     // 3) idade mínima progressiva: simulação ano a ano, respeitando o teto de idade
     const kProg = anosParaProgressiva(idade,tempo,M);
     rotas.push({nome:'Idade mínima progressiva', anos:kProg, ...comRedutor(tempo+kProg)});
 
-    // 4) pedágio de 50%: só para quem em 13/11/2019 estava a até 2 anos do tempo da regra antiga. Paga 100% da média.
+    // 4) pedágio de 50% (art. 17): só para quem em 13/11/2019 estava a até 2 anos do tempo da regra antiga. 100% da média x fator previdenciário
     const kPed50 = anosPedagio50(idade,tempo,M);
-    if(kPed50!==null) rotas.push({nome:'Pedágio de 50%', anos:kPed50, ...semRedutor()});
+    if(kPed50!==null) rotas.push({nome:'Pedágio de 50%', anos:kPed50, ...semRedutor(), fator:true});
 
     // 5) pedágio de 100%: idade mínima 57F/60M + dobro do tempo que faltava em 2019
     const kPed100 = anosPedagio100(idade,tempo,M);
-    rotas.push({nome:'Pedágio de 100%', anos:kPed100, ...comRedutor(tempo+kPed100)});
+    rotas.push({nome:'Pedágio de 100%', anos:kPed100, ...semRedutor()}); // art. 20: 100% da média, sem redutor
   }
   // 6) regra permanente: 62F/65M + 15F/20M anos (vale sempre, é o "pior caso" de quem não tem regra de transição)
-  const idadeReqPerm = M?65:62, tempoReqPerm = M?15:20;
+  const idadeReqPerm = M?65:62, tempoReqPerm = M?20:15; // homem 65 + 20 anos; mulher 62 + 15 anos
   const kPerm = Math.max(0, idadeReqPerm-idade, tempoReqPerm-tempo);
   rotas.push({nome:'Regra permanente', anos:kPerm, ...comRedutor(tempo+kPerm)});
 
@@ -227,13 +227,13 @@ function compute(){
   const anosAte=best.anos;
   const idadeApos=idade+anosAte;
   const anoApos=2026+Math.ceil(anosAte);
-  const coefTxt = best.redutor ? `coeficiente de ${best.coefPct.toFixed(0)}% sobre a média` : `100% da média, sem redutor`;
+  const coefTxt = best.fator ? `100% da média multiplicada pelo fator previdenciário, que costuma reduzir o valor; o número mostrado é antes do fator` : best.redutor ? `coeficiente de ${best.coefPct.toFixed(0)}% sobre a média` : `100% da média, sem redutor`;
 
   $('r_idade').textContent = idadeApos.toFixed(1).replace('.0','')+' anos';
   $('r_quando').textContent = anosAte<0.1 ? 'você já cumpre os requisitos' : `em ${anosAte.toFixed(1).replace('.',',')} anos, por volta de ${anoApos}`;
   $('m_regra').textContent = best.nome;
   $('m_beneficio').textContent = BRL(best.valor);
-  $('m_coef').textContent = best.redutor ? best.coefPct.toFixed(0)+'%' : '100%';
+  $('m_coef').textContent = best.fator ? '100% × fator' : best.redutor ? best.coefPct.toFixed(0)+'%' : '100%';
 
   if(state.antes==='sim'){
     $('tabela').style.display='';
@@ -241,7 +241,7 @@ function compute(){
       const win = r===best;
       const falta = r.anos<0.1 ? 'já cumpre' : r.anos.toFixed(1).replace('.',',')+' anos';
       const idadeLa = (idade+r.anos).toFixed(1).replace('.0','')+' anos';
-      return `<tr class="${win?'win':''}"><td>${r.nome}</td><td class="n">${falta}</td><td class="n">${idadeLa}</td><td class="n">${BRL(r.valor)}</td></tr>`;
+      return `<tr class="${win?'win':''}"><td>${r.nome}</td><td class="n">${falta}</td><td class="n">${idadeLa}</td><td class="n">${BRL(r.valor)}${r.fator?' *':''}</td></tr>`;
     }).join('');
   } else {
     $('tabela').style.display='none';

@@ -279,7 +279,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
         <li>Aluguel, custos fixos e seguros são reajustados uma vez por ano. A vacância é distribuída como média nos meses. A manutenção é calculada sobre o valor atualizado do imóvel.</li>
         <li>IR do aluguel: alíquota informada sobre o aluguel recebido menos taxa da imobiliária e custos fixos do dono (IPTU e condomínio), que a lei permite descontar. É uma aproximação do carnê-leão.</li>
         <li>IR da venda do imóvel: lucro = valor de venda menos corretagem, menos preço e custos da compra. Sobre o lucro aplica-se o fator de redução FR2 da Lei 11.196/2005 (1 ÷ 1,0035 elevado aos meses de posse) e as alíquotas de 15% até R$ 5 milhões, 17,5% até R$ 10 milhões, 20% até R$ 30 milhões e 22,5% acima. Isenções específicas, como imóvel único de até R$ 440 mil, não são aplicadas automaticamente.</li>
-        <li>Investimentos: cada aporte rende juros compostos e paga IR só no resgate, sobre o próprio ganho. CDB, Tesouro e fundos seguem a tabela regressiva pelo tempo de cada aporte (22,5% até 6 meses, 20% até 12, 17,5% até 24 e 15% acima). Ações pagam 15% sobre o ganho. LCI, LCA e poupança são isentas. Come-cotas dos fundos, IR cobrado em vencimentos intermediários e a isenção de R$ 20 mil mensais em ações não são simulados; adiar todo o imposto para o resgate final favorece um pouco os investimentos tributados.</li>
+        <li>Investimentos: cada aporte rende juros compostos e paga IR só no resgate, sobre o próprio ganho. CDB, Tesouro e fundos seguem a tabela regressiva pelo tempo de cada aporte (22,5% até 180 dias, 20% até 360, 17,5% até 720 e 15% acima). Ações pagam 15% sobre o ganho. LCI, LCA e poupança são isentas. Come-cotas dos fundos, IR cobrado em vencimentos intermediários e a isenção de R$ 20 mil mensais em ações não são simulados; adiar todo o imposto para o resgate final favorece um pouco os investimentos tributados.</li>
         <li>O patrimônio de cada ano supõe venda e resgate naquele momento. Rendimento e valorização são médias constantes, sem oscilações. Rentabilidade passada não garante rentabilidade futura.</li>
       </ul>
     </details>
@@ -308,7 +308,8 @@ function irInv(prod,months){
   if(prod.tax==='isento') return 0;
   if(prod.tax==='flat') return .15;
   if(prod.tax==='manual') return prod.ir/100;
-  if(months<=6) return .225; if(months<=12) return .20; if(months<=24) return .175; return .15;
+  const dias=months*365/12; // dias corridos, como conta a Receita
+  if(dias<=180) return .225; if(dias<=360) return .20; if(dias<=720) return .175; return .15;
 }
 function irImovel(base){
   if(base<=0) return 0;

@@ -154,7 +154,7 @@ header.top .sub{text-align:center;margin-left:auto;margin-right:auto;}
       <div class="hint">spread, corretora, custódia, taxa de administração, IOF em resgates curtos. Se não souber, de 0,3% a 1% ao ano é uma referência; fundos podem passar de 2%.</div></div>
     <div class="field"><label>IR sobre o rendimento</label>
       <div class="affix"><input class="num" id="ir" type="number" min="0" max="100" step="0.5" value="" placeholder="ex: 15"><span class="u">%</span></div>
-      <div class="hint">descontado do ganho no resgate; isento para LCI, LCA, poupança e dividendos de FIIs</div></div>
+      <div class="hint">descontado do ganho no resgate. CDB, Tesouro e fundos: 15% acima de 2 anos, mais em prazos curtos (até 22,5%). Isento para LCI, LCA, poupança e dividendos de FIIs</div></div>
     <div class="field"><label>Inflação esperada (opcional)</label>
       <div class="affix"><input class="num" id="inflacao" type="number" min="0" step="0.1" value="" placeholder="ex: 4,5"><span class="u">% a.a.</span></div>
       <div class="hint">se preencher, mostramos também o valor em poder de compra de hoje</div></div>
@@ -181,7 +181,8 @@ header.top .sub{text-align:center;margin-left:auto;margin-right:auto;}
       </div>
     </div>
 
-    <div class="chartwrap"><div id="chart"></div></div>
+    <div class="chartwrap"><div id="chart"></div>
+      <div class="legend"><div><i class="bolso"></i>O que você depositou</div><div><i class="juros"></i>Total, já descontado o IR</div></div></div>
   </div>
 
   <div class="eyebrow">Como ler o resultado</div>
@@ -235,7 +236,7 @@ function compute(){
   const pb=FV>0?(bolso/FV*100):100;
   $('bar').innerHTML=`<span class="bolso" style="width:${pb}%"></span><span class="juros" style="width:${100-pb}%"></span>`;
 
-  $('chart').innerHTML=svgChart(C,D,im,n);
+  $('chart').innerHTML=svgChart(C,D,im,n,ir);
 
   $('verdict').innerHTML =
     `Você vai ter <b>${BRL(FV)}</b> depois de ${anos} ${anos==1?'ano':'anos'}`+
@@ -249,11 +250,12 @@ function setEmpty(){
   $('r_real').textContent=''; $('c_tot').textContent=''; $('bar').innerHTML=''; $('chart').innerHTML='';
 }
 
-function svgChart(C,D,im,n){
+function svgChart(C,D,im,n,ir){
   const W=680,H=280,padL=58,padR=14,padT=14,padB=28;
   const plotW=W-padL-padR, plotH=H-padT-padB;
   const bolso=t=>C+D*t;
-  const total=t=> C*Math.pow(1+im,t) + (im>0?D*(Math.pow(1+im,t)-1)/im:D*t);
+  const gross=t=> C*Math.pow(1+im,t) + (im>0?D*(Math.pow(1+im,t)-1)/im:D*t);
+  const total=t=>{const g=gross(t);return g-Math.max(0,g-bolso(t))*ir;}; // líquido de IR, igual ao número principal
   let yMax=total(n)*1.05||1;
   const xs=t=>padL+(t/n)*plotW;
   const ys=v=>padT+(1-v/yMax)*plotH;

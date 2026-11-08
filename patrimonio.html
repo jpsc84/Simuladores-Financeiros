@@ -32,7 +32,7 @@ h1 em{font-style:normal;color:#E7B968;}
 .note{color:var(--ink-soft);font-size:13.5px;margin:-4px 0 14px;max-width:72ch;line-height:1.5;}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.field{margin:10px 0;}.field>label{display:block;font-size:12px;color:var(--ink);font-weight:600;margin-bottom:5px;}
+.field{margin:10px 0;}.field>label{display:block;font-size:12px;color:var(--ink);font-weight:600;margin-bottom:5px;}.field .hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
 .affix{position:relative;}.affix .u{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:13px;pointer-events:none;}
 .affix input{width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 12px 11px 34px;font-size:16px;color:var(--ink);font-family:"IBM Plex Mono",monospace;}
 .affix input:focus{outline:2px solid var(--sage);outline-offset:1px;border-color:transparent;}
@@ -85,7 +85,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <div class="chead"><span class="dot da"></span>Ativos (o que você tem)</div>
       <div class="field"><label>Dinheiro em conta</label><div class="affix"><span class="u">R$</span><input class="num a" id="a_conta" type="number" min="0" step="100" placeholder="ex: 8500"></div></div>
       <div class="field"><label>Reserva de emergência</label><div class="affix"><span class="u">R$</span><input class="num a" id="a_reserva" type="number" min="0" step="100" placeholder="ex: 32000"></div></div>
-      <div class="field"><label>Investimentos (renda fixa, ações, FIIs, cripto)</label><div class="affix"><span class="u">R$</span><input class="num a" id="a_invest" type="number" min="0" step="100" placeholder="ex: 57000"></div></div>
+      <div class="field"><label>Investimentos (renda fixa, ações, FIIs, cripto)</label><div class="affix"><span class="u">R$</span><input class="num a" id="a_invest" type="number" min="0" step="100" placeholder="ex: 57000"></div><div class="hint">sem repetir o que já entrou em reserva de emergência</div></div>
       <div class="field"><label>Previdência</label><div class="affix"><span class="u">R$</span><input class="num a" id="a_prev" type="number" min="0" step="100" placeholder="ex: 28000"></div></div>
       <div class="field"><label>Imóveis (valor de mercado)</label><div class="affix"><span class="u">R$</span><input class="num a" id="a_imovel" type="number" min="0" step="1000" placeholder="ex: 480000"></div></div>
       <div class="field"><label>Veículos (tabela FIPE)</label><div class="affix"><span class="u">R$</span><input class="num a" id="a_veiculo" type="number" min="0" step="1000" placeholder="ex: 165000"></div></div>

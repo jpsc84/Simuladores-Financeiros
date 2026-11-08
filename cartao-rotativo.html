@@ -74,7 +74,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
     <p class="sub">Pagar só o mínimo parece alívio, mas alimenta a dívida mais cara do país. Veja quanto tempo leva e quanto custa quitar do jeito que está, e do jeito que poderia ser.</p>
   </header>
 
-  <div class="aviso">Desde a Lei 14.690/2023, os juros e encargos do rotativo não podem passar de 100% da dívida original: uma fatura de R$ 1.000 não vira mais que R$ 2.000. Essa ferramenta já aplica esse teto. Mas a taxa mensal continua alta, entre 14% e 18% ao mês, e o teto só limita o total, não evita meses de aperto até lá.</div>
+  <div class="aviso">Desde a Lei 14.690/2023, os juros e encargos do rotativo não podem passar de 100% da dívida original: uma fatura de R$ 1.000 não vira mais que R$ 2.000. Essa ferramenta já aplica esse teto. Mas a taxa mensal continua alta, entre 14% e 18% ao mês, e o teto só limita o total, não evita meses de aperto até lá. Desde 2017, a dívida só pode ficar um mês no rotativo; depois o banco oferece parcelar a fatura com juros menores. Se for o seu caso, use aqui a taxa do parcelamento: o teto de 100% vale para os dois.</div>
 
   <div class="eyebrow">Sua fatura</div>
   <div class="card">
@@ -164,7 +164,7 @@ function simula(principal0, taxaM, pagamentoFn, capMeses){
 
 function compute(){
   const saldo0=val('saldo'), taxaPct=val('taxa'), minimoPct=(val('minimoPct')||15)/100, pagamento=val('pagamento');
-  const ready = saldo0>0 && taxaPct>0 && pagamento>=0;
+  const ready = saldo0>0 && taxaPct>0 && pagamento!==null && pagamento>=0;
   if(!ready){ setEmpty(); $('verdict').innerHTML='Preencha o saldo, a taxa e quanto vai pagar por mês para ver o resultado.'; return; }
   const taxaM=taxaPct/100;
   const CAP=600; // 50 anos, teto de simulação

@@ -146,7 +146,8 @@ function inssProgressivo(sal){
   return contrib;
 }
 function irrfMensal(brutoTributavel, deducoes){
-  const base=Math.max(0, brutoTributavel-deducoes);
+  // a fonte usa o maior entre as deduções legais e o desconto simplificado mensal (R$ 607,20)
+  const base=Math.max(0, brutoTributavel-Math.max(deducoes,607.20));
   const tabela=[[2428.80,0,0],[2826.65,0.075,182.16],[3751.05,0.15,394.16],[4664.68,0.225,675.49],[Infinity,0.275,908.73]];
   let ir=0;
   for(const [limite,aliq,ded] of tabela){ if(base<=limite){ ir=Math.max(0,base*aliq-ded); break; } }
@@ -192,6 +193,7 @@ function compute(){
   if(acimaLimiteMei){
     msg += ` <span class="bad">Atenção:</span> esse faturamento mensal, mantido o ano inteiro, passaria do limite anual do MEI (R$ 81.000/ano); o comparativo do MEI aqui é só ilustrativo nesse cenário.`;
   }
+  if(proLabore < valorBruto*0.28) msg += ` <span class="bad">Fator R:</span> o pró-labore está abaixo de 28% do faturamento. Em atividades sujeitas ao Fator R, isso leva a empresa para o Anexo V do Simples, com alíquota a partir de 15,5%, e não para o Anexo III; confira com seu contador qual alíquota usar.`;
   msg += ` Isso não conta FGTS, 13º e férias do CLT, nem a diferença de aposentadoria entre os três; olhe o card "o que cada um dá em troca" antes de decidir.`;
   $('verdict').innerHTML=msg;
 }

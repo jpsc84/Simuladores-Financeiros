@@ -90,7 +90,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
         <div class="affix"><input class="num" id="horizonte" type="number" min="1" max="30" step="1" value="" placeholder="ex: 5"><span class="u">anos</span></div></div>
       <div class="field"><label>Rendimento do FGTS</label>
         <div class="affix"><input class="num" id="rend" type="number" min="0" step="0.5" value="" placeholder="ex: 3"><span class="u">% a.a.</span></div>
-        <div class="hint">TR + 3% ao ano; a TR costuma ficar perto de zero</div></div>
+        <div class="hint">TR + 3% ao ano, mais a distribuição anual de lucros. Com a Selic alta, a TR deixou de ser zero; o rendimento real aparece no extrato do app FGTS. Em branco, usa 3%.</div></div>
     </div>
   </div>
 
@@ -165,7 +165,7 @@ function compute(){
   const alvoDemissao = mesDemissao ? Math.min(mesDemissao, nMeses) : null;
 
   // simula saque-aniversário mês a mês, sacando a cada 12 meses
-  let saldoA = saldo0, totalSacado=0, multaNaDemissao=null, sacadoAteDemissao=0;
+  let saldoA = saldo0, totalSacado=0, sacadoAteDemissao=0, retidoNaDemissao=null;
   for(let m=1;m<=nMeses;m++){
     saldoA = saldoA*(1+rendM) + deposito;
     if(m%12===0){
@@ -173,8 +173,8 @@ function compute(){
       saldoA -= saque; totalSacado += saque;
     }
     if(alvoDemissao && m===alvoDemissao){
-      multaNaDemissao = saldoA*0.40;
       sacadoAteDemissao = totalSacado;
+      retidoNaDemissao = saldoA; // o que fica preso para os próximos aniversários
     }
   }
   const saldoFinalAniv = saldoA;
@@ -188,17 +188,17 @@ function compute(){
   const saldoFinalResc = saldoR;
 
   if(state.demissao==='sim' && alvoDemissao){
-    const acessoAniv = sacadoAteDemissao + multaNaDemissao;
-    const acessoResc = saldoFinalResc + multaR; // saldoFinalResc no momento da demissão == saldo acumulado até ali (sem saques antes, valor certo)
     // como não houve saque no saque-rescisão, saldoR no mês da demissão é o valor correto ali; mas o loop já rodou até nMeses.
     // recalcula saldoR exatamente no mês da demissão para exibir:
     let s=saldo0;
     for(let m=1;m<=alvoDemissao;m++){ s=s*(1+rendM)+deposito; }
     const saldoNoMomento=s;
     const acessoRescCorrigido = saldoNoMomento + saldoNoMomento*0.40;
+    // a multa de 40% incide sobre todos os depósitos do contrato, corrigidos, sem descontar saques: é igual nas duas modalidades
+    const multaNaDemissao = saldoNoMomento*0.40;
 
     $('r_aniv').textContent=BRL(sacadoAteDemissao+multaNaDemissao);
-    $('r_anivSub').textContent=`${BRL(sacadoAteDemissao)} sacados até lá + ${BRL(multaNaDemissao)} de multa. O resto, ${BRL(saldoA)}, fica retido para os próximos aniversários.`;
+    $('r_anivSub').textContent=`${BRL(sacadoAteDemissao)} sacados até lá + ${BRL(multaNaDemissao)} de multa. O resto, ${BRL(retidoNaDemissao)}, fica retido e sai aos poucos nos próximos aniversários.`;
     $('r_resc').textContent=BRL(acessoRescCorrigido);
     $('r_rescSub').textContent=`${BRL(saldoNoMomento)} de saldo integral + ${BRL(saldoNoMomento*0.40)} de multa, tudo liberado na hora.`;
 

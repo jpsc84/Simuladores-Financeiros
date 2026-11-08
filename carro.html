@@ -423,7 +423,7 @@ function carHTML(key){
         <button data-v="avista" class="${c.pago==='avista'?'on':''}">À vista</button>
         <button data-v="financiado" class="${c.pago==='financiado'?'on':''}">Financiado</button>
       </div>
-      <div class="hint">à vista não tem juros. financiado, a conta soma os juros como prejuízo</div></div>
+      <div class="hint">à vista não tem juros. financiado, a conta soma como prejuízo os juros pagos enquanto você fica com o carro</div></div>
 
     <div class="adv fin ${c.pago==='financiado'?'show':''}" data-fin="${key}">
       <div class="row3">
@@ -569,10 +569,13 @@ function calcCar(k){
   if(c.pago==='financiado' && financiado>0){
     const im=Math.pow(1+(c.taxa||0)/100,1/12)-1;
     const n=c.prazo||1;
-    let totalPago;
-    if(c.sistema==='sac'){ totalPago=financiado*(1+im*(n+1)/2); parcela=financiado/n+financiado*im; parcelaSac=true; }
-    else { parcela=pmt(im,n,financiado); totalPago=parcela*n; }
-    juros=Math.max(0,totalPago-financiado);
+    if(c.sistema==='sac'){ parcela=financiado/n+financiado*im; parcelaSac=true; }
+    else { parcela=pmt(im,n,financiado); }
+    // juros só dos meses em que você fica com o carro: se vender antes de quitar, o saldo é pago na venda, sem os juros futuros
+    const meses=Math.min(n, Math.round(anos*12));
+    let s=financiado;
+    for(let m=0;m<meses;m++){ const j=s*im; juros+=j; s-=(c.sistema==='sac'? financiado/n : parcela-j); }
+    juros=Math.max(0,juros);
   }
 
   // depreciation

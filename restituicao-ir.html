@@ -71,7 +71,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
     <p class="sub">Simule o ajuste anual do IR: compare o desconto simplificado com as deduções legais, veja se sobra restituição e cheque os pontos que mais chamam atenção da malha fina.</p>
   </header>
 
-  <div class="aviso">Valores de 2026 (dependente R$ 2.275,08/ano, limite de instrução R$ 3.561,50/pessoa/ano, desconto simplificado R$ 17.640,00/ano). Este simulador usa a tabela progressiva tradicional. A Lei 15.270/2025 criou uma redução adicional para quem tem renda anual entre R$ 60.000 e R$ 88.200, que ainda não está incluída aqui; se você está nessa faixa, seu imposto real pode ficar um pouco menor do que o resultado abaixo.</div>
+  <div class="aviso">Valores de 2026 (dependente R$ 2.275,08/ano, limite de instrução R$ 3.561,50/pessoa/ano, desconto simplificado R$ 17.640,00/ano). Já inclui a redução da Lei 15.270/2025, que vale a partir do ano-calendário 2026 (declaração de 2027): quem tem rendimentos tributáveis de até R$ 60.000 no ano fica com imposto zero, e entre R$ 60.000 e R$ 88.200 o imposto é reduzido de forma decrescente.</div>
 
   <div class="eyebrow">Seus rendimentos e retenções</div>
   <div class="card">
@@ -173,6 +173,12 @@ function irAnual(base){
   return 0;
 }
 
+// Lei 15.270/2025, art. 11-A da Lei 9.250: redução no ajuste anual, limitada ao imposto calculado
+function reducao2026(rendimentos){
+  if(rendimentos<=60000) return 2694.15;
+  if(rendimentos<=88200) return Math.max(0, 8429.73 - 0.095575*rendimentos);
+  return 0;
+}
 function compute(){
   const rendimento=val('rendimento'), irrfRetido=val('irrfRetido')||0;
   const inssAno=val('inssAno')||0, dependentes=val('dependentes')||0;
@@ -186,11 +192,12 @@ function compute(){
 
   const deducoesCompletas = inssAno + dependentes*DEP + educacao + saude + pgblDeduzivel;
   const baseCompleto = Math.max(0, rendimento - deducoesCompletas);
-  const irCompleto = irAnual(baseCompleto);
+  const red = reducao2026(rendimento);
+  const irCompleto = Math.max(0, irAnual(baseCompleto) - red);
 
   const descontoSimp = Math.min(rendimento*0.20, SIMP_LIMITE);
   const baseSimp = Math.max(0, rendimento - descontoSimp);
-  const irSimp = irAnual(baseSimp);
+  const irSimp = Math.max(0, irAnual(baseSimp) - red);
 
   $('r_simpIR').textContent = BRL(irSimp);
   $('r_compIR').textContent = BRL(irCompleto);
@@ -204,6 +211,10 @@ function compute(){
     msg = `Pela opção mais vantajosa (<b>${melhorOpcao}</b>), o imposto devido no ano é <b>${BRL(irDevido)}</b>. Como você já reteve ${BRL(irrfRetido)} na fonte, a tendência é <span class="hl">restituir ${BRL(resultado)}</span>.`;
   } else {
     msg = `Pela opção mais vantajosa (<b>${melhorOpcao}</b>), o imposto devido no ano é <b>${BRL(irDevido)}</b>. Como você reteve só ${BRL(irrfRetido)} na fonte, a tendência é <span class="bad">pagar ${BRL(-resultado)}</span> na declaração.`;
+  }
+  if(red>0){
+    const semRed = Math.min(irAnual(baseSimp), irAnual(baseCompleto));
+    if(semRed>irDevido) msg += ` A redução da Lei 15.270/2025 já está aplicada: sem ela, o imposto seria ${BRL(semRed)}.`;
   }
   if(educacaoInput>educacao){
     msg += ` Atenção: você informou ${BRL(educacaoInput)} em educação, mas o limite dedutível ficou em ${BRL(educacao)}; o restante não entra na conta.`;

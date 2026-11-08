@@ -89,12 +89,15 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <div class="field"><label>Rendimento esperado</label>
         <div class="affix"><input class="num" id="rendAno" type="number" min="0" step="0.5" value="" placeholder="ex: 9"><span class="u">% a.a.</span></div></div>
     </div>
+    <div class="field"><label>Outras deduções do IR no ano (opcional)</label>
+      <div class="affix"><input class="num" id="outrasDed" type="number" min="0" step="100" value="" placeholder="ex: 12000"><span class="u">R$</span></div>
+      <div class="hint">INSS ou previdência do servidor, dependentes, saúde e educação. Servem para ver se a declaração completa com PGBL bate o desconto simplificado.</div></div>
     <div class="field"><label>Você faz declaração completa e contribui para INSS/regime próprio?</label>
       <div class="seg" id="seg-elegivel"><button data-v="sim" class="on">Sim</button><button data-v="nao">Não</button></div>
       <div class="hint">só nesse caso o PGBL é dedutível; sem isso, pule direto para o VGBL</div></div>
     <div class="field"><label>Regime de tributação no resgate</label>
       <div class="seg" id="seg-regime"><button data-v="regressiva" class="on">Regressiva</button><button data-v="progressiva">Progressiva</button></div>
-      <div class="hint">regressiva cai com o tempo até 10% após 10 anos; progressiva usa a tabela do IR, aqui estimada em 15% na fonte</div></div>
+      <div class="hint">regressiva cai com o tempo de cada contribuição, de 35% até 10% após 10 anos; progressiva soma o resgate à sua renda e usa a tabela do IR, aqui estimada pela sua faixa atual</div></div>
   </div>
 
   <div class="eyebrow">No resgate</div>
@@ -118,7 +121,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
   <div class="card">
     <ul class="read">
       <li>No PGBL o IR do resgate incide sobre saldo total (contribuições + rendimento), porque você já deduziu as contribuições no IR ao longo do caminho. No VGBL, o IR incide só sobre o rendimento, porque as contribuições já saíram do seu bolso líquido.</li>
-      <li>A economia de IR do PGBL só existe todo ano em que você é elegível à dedução; ela entra como um ganho separado, sem contar aqui como parte do saldo acumulado, para não misturar dinheiro que você já gastou ou reinvestiu de outro jeito.</li>
+      <li>A economia de IR do PGBL só existe todo ano em que você é elegível à dedução. Para a comparação ser justa, a ferramenta supõe que você reinveste cada restituição no mesmo rendimento, fora do plano, e soma esse valor ao PGBL no fim. Se você gastar a restituição, a vantagem do PGBL diminui.</li>
       <li>Quanto mais tempo até o resgate, mais a alíquota regressiva cai, e mais o PGBL tende a compensar para quem é elegível à dedução. Sem elegibilidade, o VGBL quase sempre vence, porque o PGBL perde a vantagem e ainda paga IR sobre o principal.</li>
     </ul>
   </div>
@@ -138,56 +141,65 @@ const BRL=v=>(isFinite(v)?v:0).toLocaleString('pt-BR',{style:'currency',currency
 const val=id=>{const x=parseFloat(($(id).value+'').replace(',','.'));return isFinite(x)?x:null;};
 const state={elegivel:'sim', regime:'regressiva'};
 
+// Tabela regressiva da previdência (Lei 11.053/2004): prazo de cada contribuição
 function aliqRegressiva(anos){
-  if(anos<2) return 0.35;
-  if(anos<4) return 0.30;
-  if(anos<6) return 0.25;
-  if(anos<8) return 0.20;
-  if(anos<10) return 0.15;
+  if(anos<=2) return 0.35;
+  if(anos<=4) return 0.30;
+  if(anos<=6) return 0.25;
+  if(anos<=8) return 0.20;
+  if(anos<=10) return 0.15;
   return 0.10;
 }
-
+// IR anual: tabela progressiva 2026 (mensal x12) com a redução da Lei 15.270/2025
+const TABELA_ANUAL=[[29145.60,0,0],[33919.80,0.075,2185.92],[45012.60,0.15,4729.92],[55976.16,0.225,8105.88],[Infinity,0.275,10904.76]];
+function irTabela(base){ if(base<=0) return 0; for(const [lim,al,ded] of TABELA_ANUAL){ if(base<=lim) return Math.max(0,base*al-ded); } return 0; }
+function reducao2026(rend){ if(rend<=60000) return 2694.15; if(rend<=88200) return Math.max(0,8429.73-0.095575*rend); return 0; }
+function irAnualDevido(rend,deducao){ return Math.max(0, irTabela(rend-deducao) - reducao2026(rend)); }
+function aliqMarginalAnual(base){ for(const [lim,al] of TABELA_ANUAL){ if(base<=lim) return al; } return 0.275; }
 function compute(){
   const renda=val('renda'), contribMensal=val('contribMensal'), horizonte=val('horizonte'), rendAnoPct=val('rendAno');
-  const ready = renda>0 && contribMensal>=0 && horizonte>0 && rendAnoPct!==null;
+  const ready = renda>0 && contribMensal>0 && horizonte>0 && rendAnoPct!==null;
   if(!ready){ setEmpty(); return; }
-
   const contribAnual = contribMensal*12;
   const rendM = Math.pow(1+rendAnoPct/100, 1/12)-1;
   const nMeses = Math.round(horizonte*12);
-
-  let saldo=0, totalContribuido=0;
-  for(let m=1;m<=nMeses;m++){ saldo = saldo*(1+rendM) + contribMensal; totalContribuido += contribMensal; }
-  const rendimentoAcumulado = saldo - totalContribuido;
-
-  const aliq = state.regime==='regressiva' ? aliqRegressiva(horizonte) : 0.15;
-
-  const irPGBL = saldo*aliq; // incide sobre o total
-  const liquidoPGBL = saldo - irPGBL;
-
-  const irVGBL = rendimentoAcumulado*aliq; // incide só sobre o rendimento
-  const liquidoVGBL = saldo - irVGBL;
-
-  const dedutivelAno = state.elegivel==='sim' ? Math.min(contribAnual, renda*0.12) : 0;
-  // estimativa simplificada de alíquota marginal, pela tabela anual 2026
-  function aliqMarginalAnual(base){
-    const T=[[29145.60,0],[33919.80,0.075],[45012.60,0.15],[55976.16,0.225],[Infinity,0.275]];
-    for(const [limite,aliq] of T){ if(base<=limite) return aliq; }
+  const progressiva = state.regime==='progressiva';
+  const aliqProg = aliqMarginalAnual(renda); // estimativa: o resgate soma à sua renda do ano, na faixa em que você está hoje
+  // cada contribuição tem o próprio prazo de acumulação e a própria alíquota
+  let saldo=0, irPGBL=0, irVGBL=0;
+  for(let m=1;m<=nMeses;m++){
+    const meses = nMeses-m;                       // tempo que esta contribuição fica aplicada
+    const v = contribMensal*Math.pow(1+rendM, meses);
+    const al = progressiva ? aliqProg : aliqRegressiva(meses/12);
+    saldo += v;
+    irPGBL += v*al;                               // PGBL: IR sobre contribuição + rendimento
+    irVGBL += (v-contribMensal)*al;               // VGBL: IR só sobre o rendimento
   }
-  const economiaAnual = dedutivelAno * aliqMarginalAnual(renda);
-  const economiaTotal = economiaAnual*horizonte;
-
+  const liquidoPGBL = saldo - irPGBL;
+  const liquidoVGBL = saldo - irVGBL;
+  const dedutivelAno = state.elegivel==='sim' ? Math.min(contribAnual, renda*0.12) : 0;
+  // economia = melhor declaração sem PGBL (simplificada ou completa) menos a completa com PGBL
+  const outras = val('outrasDed')||0;
+  const irSimp = Math.max(0, irTabela(renda - Math.min(renda*0.20, 17640)) - reducao2026(renda));
+  const semPGBL = Math.min(irSimp, irAnualDevido(renda, outras));
+  const economiaAnual = Math.max(0, semPGBL - irAnualDevido(renda, outras+dedutivelAno));
+  // a restituição de cada ano é reinvestida no mesmo rendimento, fora do plano, com IR de 15% sobre o ganho
+  const anosInteiros = Math.floor(nMeses/12);
+  let restInvest=0, restAportado=0;
+  for(let a=1;a<=anosInteiros;a++){ const meses=nMeses-a*12; const v=economiaAnual*Math.pow(1+rendM,meses); restInvest += v - (v-economiaAnual)*0.15; restAportado+=economiaAnual; }
   $('r_pgblLiquido').textContent = BRL(liquidoPGBL);
   $('r_vgblLiquido').textContent = BRL(liquidoVGBL);
-
   let msg='';
-  if(state.elegivel==='sim'){
-    const liquidoPGBLComEconomia = liquidoPGBL + economiaTotal;
-    const vencedor = liquidoPGBLComEconomia > liquidoVGBL ? 'PGBL' : 'VGBL';
-    msg = `Sendo elegível à dedução, o PGBL devolve <span class="hl">${BRL(economiaAnual)}/ano</span> de economia de IR, cerca de ${BRL(economiaTotal)} ao longo dos ${horizonte} anos. Somando essa economia ao líquido do resgate, o PGBL chega a ${BRL(liquidoPGBLComEconomia)} contra ${BRL(liquidoVGBL)} do VGBL: nesse cenário, <b>${vencedor}</b> sai na frente.`;
+  if(state.elegivel==='sim' && economiaAnual>0.5){
+    const pgblTotal = liquidoPGBL + restInvest;
+    const vencedor = pgblTotal > liquidoVGBL ? 'PGBL' : 'VGBL';
+    msg = `Sendo elegível à dedução, o PGBL reduz seu imposto em <span class="hl">${BRL(economiaAnual)} por ano</span>. Reinvestindo essas restituições no mesmo rendimento, elas viram ${BRL(restInvest)} no fim. Somando ao líquido do resgate, o PGBL chega a ${BRL(pgblTotal)} contra ${BRL(liquidoVGBL)} do VGBL: nesse cenário, <b>${vencedor}</b> sai na frente.`;
+  } else if(state.elegivel==='sim'){
+    msg = `${renda<=60000?'Com essa renda, a dedução do PGBL não reduz o seu imposto: pela Lei 15.270/2025, quem tem até R$ 60.000 de rendimentos tributáveis no ano já não paga IR.':'Com essas deduções, o desconto simplificado já deixa seu imposto menor do que a declaração completa com PGBL, então a dedução não traz economia. Confira o campo de outras deduções.'} Sem economia para compensar, o VGBL entrega <b>${BRL(liquidoVGBL)}</b> contra <b>${BRL(liquidoPGBL)}</b> do PGBL: <span class="hl">VGBL sai na frente</span>.`;
   } else {
     msg = `Sem elegibilidade à dedução, o PGBL perde sua principal vantagem e ainda paga IR sobre o saldo total no resgate. Nesse cenário, o VGBL entrega <b>${BRL(liquidoVGBL)}</b> líquidos contra <b>${BRL(liquidoPGBL)}</b> do PGBL: <span class="hl">VGBL sai na frente</span> quase sempre que não há dedução.`;
   }
+  if(!progressiva && horizonte<=10) msg += ` Na tabela regressiva, cada contribuição conta o próprio tempo: as feitas nos últimos 2 anos antes do resgate pagam 35%.`;
   $('verdict').innerHTML=msg;
 }
 function setEmpty(){

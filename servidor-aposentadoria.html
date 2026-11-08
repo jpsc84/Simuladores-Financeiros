@@ -92,7 +92,8 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
         <div class="seg" id="seg-sexo"><button data-v="M" class="on">Masculino</button><button data-v="F">Feminino</button></div></div>
     </div>
     <div class="field"><label>Categoria</label>
-      <div class="seg" id="seg-cat"><button data-v="geral" class="on">Servidor geral</button><button data-v="policial">Policial</button></div></div>
+      <div class="seg" id="seg-cat"><button data-v="geral" class="on">Servidor geral</button><button data-v="policial">Policial</button></div>
+      <div class="hint">Policial que entrou até 12/11/2019: regra do art. 5º da EC 103, com 55 anos para ambos os sexos, 30 anos de contribuição e 20 de atividade policial (homem) ou 25 e 15 (mulher), e integralidade. A opção de 52/53 anos com pedágio de 100% não está simulada.</div></div>
     <div class="row2">
       <div class="field"><label>Tempo de contribuição já cumprido</label>
         <div class="affix"><input class="num" id="contrib" type="number" min="0" step="1" value="" placeholder="ex: 7"><span class="u">anos</span></div></div>
@@ -161,7 +162,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
   <div class="card">
     <ul class="read">
       <li>O benefício do RPPS é limitado ao teto para quem entrou após 2013. Por isso quem ganha bem tem um gap grande entre o salário e a aposentadoria, e é aí que o Funpresp entra.</li>
-      <li>O coeficiente da regra é 60% da média mais 2% por ano de contribuição acima de 20 anos (homem) ou 15 (mulher). Quanto mais tempo, maior o benefício, até 100%.</li>
+      <li>Servidor geral: o coeficiente é 60% da média mais 2% por ano de contribuição acima de 20 anos (homem) ou 15 (mulher), até 100%. Policial pela regra do art. 5º: integralidade, ou seja, 100% da última remuneração, limitada ao teto para quem está sujeito a ele.</li>
       <li>A contrapartida do patrocinador no Funpresp é dinheiro grátis, até 8,5% do salário acima do teto. Não aderir com o aporte máximo é abrir mão desse valor.</li>
       <li>A renda do Funpresp aqui é por prazo certo: consome o saldo ao longo dos anos de usufruto. Mais anos de usufruto significam renda mensal menor, porém por mais tempo.</li>
     </ul>
@@ -193,18 +194,20 @@ function compute(){
   if(!ready){ setEmpty(); return; }
 
   // requisitos por categoria/sexo
-  const idadeMin = pol ? (M?55:52) : (M?65:62);
+  // policial: EC 103 art. 5º c/c LC 51/1985 (quem ingressou até 12/11/2019)
+  const idadeMin = pol ? 55 : (M?65:62);
   const contribExig = pol ? (M?30:25) : 25;
   const servPubExig = 10;
-  const efetivoExig = pol ? (M?25:20) : 0;
+  const efetivoExig = pol ? (M?20:15) : 0;
   // quando pode aposentar
   const aIdade=Math.max(0,idadeMin-idade), aContrib=Math.max(0,contribExig-contrib), aServ=Math.max(0,servPubExig-servpub), aEfet=pol?Math.max(0,efetivoExig-efetivo):0;
   const anosAte=Math.max(aIdade,aContrib,aServ,aEfet);
   const idadeApos=idade+anosAte, anoApos=ANO_ATUAL+Math.ceil(anosAte);
   // benefício RPPS
   const contribTotal=contrib+anosAte;
-  const coef=Math.min(1,Math.max(0.6, 0.6+0.02*Math.max(0, contribTotal-(M?20:15))));
-  const base=sujTeto?Math.min(media,teto):media;
+  // geral: 60% + 2% por ano acima de 20 (H) / 15 (M) sobre a média. Policial (art. 5º): integralidade, 100% da última remuneração (Parecer AGU JL-04/2020)
+  const coef=pol?1:Math.min(1,Math.max(0.6, 0.6+0.02*Math.max(0, contribTotal-(M?20:15))));
+  const base=pol?(sujTeto?Math.min(remun,teto):remun):(sujTeto?Math.min(media,teto):media);
   const bruto=base*coef;
   const rpps=sujTeto?Math.min(bruto,teto):bruto;
   const gap=Math.max(0,remun-rpps);
