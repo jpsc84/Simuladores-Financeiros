@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#12463B">
+<title>Financiar imóvel para alugar ou investir · @juanpablodsc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#EAEDEC;--card:#F4F6F5;--ink:#0E2A24;--ink-soft:#3D544D;--line:#C9D2CF;--petrol:#12463B;--brass:#B07D2B;--sage:#3E7C6B;--steel:#4B6C86;--clay:#9E3B26;--muted:#7A8A85;--shadow:0 1px 2px rgba(14,42,36,.06),0 8px 24px rgba(14,42,36,.06);}
+*{box-sizing:border-box}html{color-scheme:light;}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+.num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+.wrap{max-width:820px;margin:0 auto;padding:18px 16px 64px;}
+header.top{background:var(--ink);color:#EAF1EE;border-radius:16px;padding:20px 18px 24px;margin-bottom:22px;box-shadow:var(--shadow);}
+.back{display:inline-flex;align-items:center;gap:7px;color:#EAF1EE;text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.02em;font-weight:500;padding:8px 14px;border:1px solid #3A5A50;border-radius:9px;background:#0C2620;margin-bottom:16px;transition:background .15s,border-color .15s;}
+.back:hover{background:#16453A;border-color:#4E6E63;color:#fff;}
+.finrow{display:flex;justify-content:center;align-items:center;gap:13px;margin:6px 0 14px;}
+.finrow svg{width:24px;height:24px;flex:none;}
+.finrow .op{font-family:"IBM Plex Mono",monospace;font-size:18px;line-height:1;color:#E7B968;font-weight:600;}
+h1{font-family:"Archivo",sans-serif;font-weight:800;font-stretch:112%;color:#FFFFFF;font-size:clamp(26px,6vw,40px);line-height:1.02;letter-spacing:-.02em;margin:14px 0 6px;text-align:center;}
+h1 em{font-style:normal;color:#E7B968;}
+.sub{color:#C6D3CE;max-width:60ch;font-size:14.5px;text-align:center;margin-left:auto;margin-right:auto;}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);display:flex;align-items:center;gap:8px;margin:26px 0 12px;}
+.eyebrow::before{content:"";width:16px;height:1px;background:var(--brass);display:inline-block;}
+.note{color:var(--ink-soft);font-size:13.5px;margin:-4px 0 14px;max-width:72ch;line-height:1.5;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);}
+.field{margin:12px 0;}.field>label{display:block;font-size:12px;color:var(--ink);font-weight:600;margin-bottom:5px;}
+.field input,.field select{width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-size:16px;color:var(--ink);font-family:"IBM Plex Mono",monospace;}
+.field input[type=text]{font-family:"IBM Plex Sans",sans-serif;font-size:15px;}
+.field input:focus,.field select:focus{outline:2px solid var(--sage);outline-offset:1px;border-color:transparent;}
+.field .hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
+.affix{position:relative;}.affix .u{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:13px;pointer-events:none;}.affix input{padding-right:58px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff;}
+.seg button{flex:1;border:none;background:transparent;padding:10px 6px;font-size:13px;cursor:pointer;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;}
+.seg button.on{background:var(--ink);color:#fff;}
+.subhead{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);margin:16px 0 6px;}
+.divider{border:none;border-top:1px dashed var(--line);margin:16px 0 6px;}
+.inv{display:grid;grid-template-columns:1.2fr 1fr;gap:8px;align-items:center;margin:8px 0;}
+.inv .nm{display:flex;flex-direction:column;gap:2px;} .inv .nm b{font-size:13.5px;font-weight:600;} .inv .nm span{font-size:10.5px;color:var(--muted);font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.05em;}
+.inv .affix input{width:100%;background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 52px 9px 10px;font-size:14px;color:var(--ink);font-family:"IBM Plex Mono",monospace;}
+.inv .affix input:focus{outline:2px solid var(--sage);outline-offset:1px;border-color:transparent;}
+.inv .affix .u{font-size:12px;}
+.big{padding:2px 0 4px;}.big .k{font-size:12px;color:var(--muted);}
+.big .v{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(24px,6.5vw,36px);letter-spacing:-.02em;line-height:1.04;margin-top:2px;color:var(--petrol);overflow-wrap:anywhere;}
+.big .subv{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 6px;}
+.duo .side{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 13px;border-top:4px solid var(--petrol);}
+.duo .side.b{border-top-color:var(--brass);}.duo .side.b .v{color:var(--brass);}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px;}
+.metric{border:1px solid var(--line);border-radius:11px;padding:11px 12px;background:#fff;}
+.metric .t{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-family:"IBM Plex Mono",monospace;}
+.metric .n{font-family:"Archivo",sans-serif;font-weight:700;font-size:17px;margin-top:3px;color:var(--ink);overflow-wrap:anywhere;}
+.metric .d{font-size:11.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4;}
+.bal{border:1px solid var(--line);border-radius:12px;background:#fff;padding:2px 14px;margin:10px 0 14px;}
+.bal .r{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.bal .r:last-child{border-bottom:none;}
+.bal .r .lab{color:var(--ink-soft);}
+.bal .r .v{font-family:"IBM Plex Mono",monospace;font-weight:600;white-space:nowrap;}
+.bal .pos .v{color:var(--sage);}.bal .neg .v{color:var(--clay);}
+.bal .tot .lab{color:var(--ink);font-weight:700;}
+.bal .tot .v{font-family:"Archivo",sans-serif;font-size:18px;color:var(--petrol);}
+.bal.b .tot .v{color:var(--brass);}
+.verdict{background:var(--ink);color:#EAF1EE;border-radius:12px;padding:14px 15px;margin:14px 0;font-size:14.5px;line-height:1.55;}
+.verdict b{color:#fff;}.verdict .hl{color:#E9C77E;}
+.warn{background:#f6e9e4;border:1px solid #e2b7a9;color:#7d2f1c;border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13.5px;}
+.info{background:#faf0dd;border:1px solid #e3c890;color:#603f11;border-radius:12px;padding:12px 14px;margin:12px 0;font-size:13px;}
+.chartwrap{margin:10px 0 2px;}.chart{width:100%;height:auto;display:block;}
+.clegend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;}
+.clegend div{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;}
+.clegend i{width:14px;height:4px;border-radius:2px;display:inline-block;flex:none;}
+table.res{width:100%;border-collapse:collapse;margin:8px 0 4px;font-size:13.5px;}
+table.res th,table.res td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);}
+table.res th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+table.res td.n,table.res th.n{font-family:"IBM Plex Mono",monospace;text-align:right;white-space:nowrap;}
+table.res tr.win td{background:#e7f0ea;} table.res tr.win td:first-child{font-weight:700;border-left:3px solid var(--sage);}
+table.res tr.prop td:first-child{font-weight:700;}
+.tablewrap{overflow-x:auto;}
+details{margin-top:12px;}summary{cursor:pointer;color:var(--petrol);font-weight:600;font-size:14px;padding:4px 0;}
+.small{font-size:12px;color:var(--ink-soft);line-height:1.5;}
+.read li{color:var(--ink-soft);font-size:13.5px;margin:7px 0;line-height:1.5;list-style:none;padding-left:16px;position:relative;}
+.read li::before{content:"›";position:absolute;left:0;color:var(--brass);font-weight:700;}ul.read{padding-left:0;margin:0;}
+footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;font-family:"IBM Plex Mono",monospace;line-height:1.6;}
+.seealso{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:9px 12px;}
+.seealso .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);width:100%;}
+.seealso a{color:var(--petrol);text-decoration:none;font-size:13.5px;font-weight:600;border:1px solid var(--line);border-radius:20px;padding:6px 13px;background:var(--card);transition:border-color .15s,background .15s;}
+.seealso a:hover{border-color:var(--petrol);background:#e6ede9;}
+.seealso + footer{margin-top:18px;border-top:none;padding-top:0;}
+[hidden]{display:none!important}
+@media (max-width:640px){.row2{grid-template-columns:1fr;}.metrics{grid-template-columns:1fr;}.duo{grid-template-columns:1fr;}table.res{font-size:12.5px;}table.res th,table.res td{padding:8px 5px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="back" href="index.html">← Voltar</a>
+    <div class="finrow">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="13" width="4" height="8" fill="#9FB4AD"/><rect x="10" y="8" width="4" height="13" fill="#E7B968"/><rect x="17" y="4" width="4" height="17" fill="#9FB4AD"/></svg>
+      <span class="op">+</span><span class="op">−</span><span class="op">×</span><span class="op">%</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#9FB4AD" stroke-width="2"/><path d="M12 12 L12 3 A9 9 0 0 1 21 12 Z" fill="#E7B968"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E7B968" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3,17 9,11 13,15 21,6"/><polyline points="15,6 21,6 21,12"/></svg>
+    </div>
+    <h1>Financiar imóvel para alugar <em>ou investir?</em></h1>
+    <p class="sub">Compare comprar um imóvel financiado para alugar, completando do seu bolso quando o aluguel não cobre a parcela, com investir esse mesmo dinheiro. Mesma entrada, mesmo valor saindo do bolso todo mês.</p>
+  </header>
+
+  <div class="eyebrow">1 · O imóvel e o financiamento</div>
+  <p class="note">Use os números da proposta do banco. O resultado aparece sozinho quando os campos principais estiverem preenchidos.</p>
+  <div class="card">
+    <div class="row2">
+      <div class="field"><label for="price">Preço do imóvel</label>
+        <div class="affix"><input class="num" id="price" type="number" inputmode="decimal" min="0" step="1000" placeholder="ex: 300000"><span class="u">R$</span></div></div>
+      <div class="field"><label for="down">Entrada</label>
+        <div class="affix"><input class="num" id="down" type="number" inputmode="decimal" min="0" step="1000" placeholder="ex: 60000"><span class="u">R$</span></div>
+        <div class="hint">o que você paga do seu bolso na compra</div></div>
+    </div>
+    <div class="field"><label for="buy">Custos da compra</label>
+      <div class="affix"><input class="num" id="buy" type="number" inputmode="decimal" min="0" max="30" step="0.5" placeholder="ex: 4"><span class="u">%</span></div>
+      <div class="hint">ITBI, escritura, registro e avaliação do banco. Costuma ficar entre 3% e 5% do preço.</div></div>
+    <div class="row2">
+      <div class="field"><label for="rate">Juros do financiamento</label>
+        <div class="affix"><input class="num" id="rate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="ex: 11,5"><span class="u">%</span></div>
+        <div class="hint">use a taxa efetiva da proposta</div></div>
+      <div class="field"><label>A taxa é</label>
+        <div class="seg" id="seg-rateUnit"><button type="button" data-v="anual" class="on">Ao ano</button><button type="button" data-v="mensal">Ao mês</button></div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="term">Prazo</label>
+        <div class="affix"><input class="num" id="term" type="number" inputmode="numeric" min="1" max="600" step="1" placeholder="ex: 420"><span class="u">meses</span></div>
+        <div class="hint">420 meses = 35 anos</div></div>
+      <div class="field"><label>Sistema de amortização</label>
+        <div class="seg" id="seg-sys"><button type="button" data-v="sac" class="on">SAC</button><button type="button" data-v="price">PRICE</button></div>
+        <div class="hint">SAC: parcela começa maior e cai. PRICE: parcela fixa.</div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="ins">Seguros e tarifa do financiamento</label>
+        <div class="affix"><input class="num" id="ins" type="number" inputmode="decimal" min="0" step="10" placeholder="ex: 90"><span class="u">R$/mês</span></div>
+        <div class="hint">seguros MIP e DFI e tarifa mensal, que vêm junto da parcela</div></div>
+      <div class="field"><label for="tr">Correção do saldo (TR)</label>
+        <div class="affix"><input class="num" id="tr" type="number" inputmode="decimal" min="0" max="30" step="0.1" placeholder="ex: 1,5"><span class="u">% a.a.</span></div>
+        <div class="hint">financiamentos da Caixa e de bancos corrigem o saldo pela TR. Em branco, sem correção.</div></div>
+    </div>
+  </div>
+
+  <div class="eyebrow">2 · O aluguel e os custos de ser dono</div>
+  <p class="note">O aluguel ajuda a pagar a parcela, mas chega reduzido: tem mês sem inquilino, imobiliária, imposto e manutenção.</p>
+  <div class="card">
+    <div class="row2">
+      <div class="field"><label for="rent">Aluguel por mês</label>
+        <div class="affix"><input class="num" id="rent" type="number" inputmode="decimal" min="0" step="50" placeholder="ex: 1500"><span class="u">R$</span></div>
+        <div class="hint">costuma ficar entre 0,4% e 0,6% do preço do imóvel</div></div>
+      <div class="field"><label for="rentg">Reajuste do aluguel</label>
+        <div class="affix"><input class="num" id="rentg" type="number" inputmode="decimal" step="0.5" placeholder="= inflação"><span class="u">% a.a.</span></div>
+        <div class="hint">em branco, sobe junto com a inflação</div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="vac">Meses sem inquilino</label>
+        <div class="affix"><input class="num" id="vac" type="number" inputmode="decimal" min="0" max="12" step="0.5" placeholder="ex: 1"><span class="u">por ano</span></div>
+        <div class="hint">média de vacância entre um contrato e outro</div></div>
+      <div class="field"><label for="adm">Taxa da imobiliária</label>
+        <div class="affix"><input class="num" id="adm" type="number" inputmode="decimal" min="0" max="100" step="0.5" placeholder="ex: 10"><span class="u">% do aluguel</span></div>
+        <div class="hint">entre 8% e 10%. Zero se você mesmo administra.</div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="own">Custos fixos do dono</label>
+        <div class="affix"><input class="num" id="own" type="number" inputmode="decimal" min="0" step="10" placeholder="ex: 100"><span class="u">R$/mês</span></div>
+        <div class="hint">IPTU e condomínio nos meses vazios, ou o que o inquilino não paga, em média por mês</div></div>
+      <div class="field"><label for="maint">Manutenção</label>
+        <div class="affix"><input class="num" id="maint" type="number" inputmode="decimal" min="0" max="20" step="0.1" placeholder="ex: 0,5"><span class="u">% a.a.</span></div>
+        <div class="hint">reformas e reparos, em % do valor do imóvel por ano</div></div>
+    </div>
+    <div class="field"><label for="irr">Imposto de renda sobre o aluguel</label>
+      <div class="affix"><input class="num" id="irr" type="number" inputmode="decimal" min="0" max="27.5" step="0.5" placeholder="ex: 27,5"><span class="u">%</span></div>
+      <div class="hint">o aluguel soma ao seu salário no IR. Se você já ganha acima de R$ 7.350 por mês, ele cai na faixa de 27,5%. A taxa da imobiliária, o IPTU e o condomínio pagos por você são descontados antes do imposto.</div></div>
+  </div>
+
+  <div class="eyebrow">3 · Se investir em vez de comprar</div>
+  <p class="note">A entrada e os custos da compra ficam aplicados, e todo mês você investe exatamente o que teria colocado do bolso para completar a parcela. Preencha o rendimento das opções que quer comparar; as que ficarem em branco ficam de fora.</p>
+  <div class="card">
+    <div class="subhead" style="margin-top:2px">Rendimento médio esperado por ano</div>
+    <p class="small" style="margin:0 0 6px">Use a média que você espera para todo o período, não só a taxa de hoje, já descontando custódia e taxa de administração. O imposto de renda a ferramenta desconta sozinha.</p>
+    <div id="prodlist"></div>
+    <div class="subhead">Outro investimento (opcional)</div>
+    <div class="field"><label for="m_nome">Nome</label><input id="m_nome" type="text" placeholder="ex: fundo imobiliário, debênture, ETF"></div>
+    <div class="row2">
+      <div class="field"><label for="m_rate">Rendimento médio</label>
+        <div class="affix"><input class="num" id="m_rate" type="number" inputmode="decimal" min="0" step="0.1" placeholder="ex: 11"><span class="u">% a.a.</span></div></div>
+      <div class="field"><label for="m_ir">IR sobre o ganho</label>
+        <div class="affix"><input class="num" id="m_ir" type="number" inputmode="decimal" min="0" max="100" step="0.5" placeholder="ex: 15"><span class="u">%</span></div>
+        <div class="hint">zero se for isento</div></div>
+    </div>
+  </div>
+
+  <div class="eyebrow">4 · O longo prazo</div>
+  <p class="note">A comparação imagina que, no fim do período, você vende o imóvel e resgata os investimentos, pagando os impostos de cada lado.</p>
+  <div class="card">
+    <div class="row2">
+      <div class="field"><label for="years">Comparar por quantos anos</label>
+        <div class="affix"><input class="num" id="years" type="number" inputmode="numeric" min="1" max="50" step="1" placeholder="ex: 35"><span class="u">anos</span></div></div>
+      <div class="field"><label for="infl">Inflação média</label>
+        <div class="affix"><input class="num" id="infl" type="number" inputmode="decimal" min="0" max="30" step="0.1" placeholder="ex: 4"><span class="u">% a.a.</span></div>
+        <div class="hint">serve para mostrar tudo em dinheiro de hoje</div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="appr">Valorização do imóvel</label>
+        <div class="affix"><input class="num" id="appr" type="number" inputmode="decimal" min="-20" max="50" step="0.5" placeholder="ex: 4"><span class="u">% a.a.</span></div>
+        <div class="hint">no longo prazo, imóveis no Brasil costumam subir perto da inflação. Acima dela é uma aposta otimista.</div></div>
+      <div class="field"><label for="sell">Custos da venda</label>
+        <div class="affix"><input class="num" id="sell" type="number" inputmode="decimal" min="0" max="30" step="0.5" placeholder="ex: 6"><span class="u">%</span></div>
+        <div class="hint">corretagem, em geral 5% a 6% do valor de venda</div></div>
+    </div>
+    <div class="field"><label>Imposto sobre o lucro da venda do imóvel</label>
+      <div class="seg" id="seg-saleTax"><button type="button" data-v="calc" class="on">Calcular</button><button type="button" data-v="isento">Isento</button></div>
+      <div class="hint">"Calcular" aplica 15% sobre o lucro, já com o fator de redução da lei, que diminui o imposto quanto mais tempo você fica com o imóvel. Escolha "Isento" se vai usar o dinheiro para comprar outro imóvel residencial em até 180 dias.</div></div>
+  </div>
+
+  <div class="eyebrow">Quem termina com mais</div>
+  <div class="card">
+    <div class="field" style="margin-top:0"><label>Mostrar valores</label>
+      <div class="seg" id="seg-view"><button type="button" data-v="real" class="on">Dinheiro de hoje</button><button type="button" data-v="nom">Valor futuro</button></div></div>
+    <div class="verdict" id="verdict">Preencha preço, juros, prazo, aluguel, anos, inflação, valorização e o rendimento de ao menos um investimento para ver o resultado.</div>
+    <div id="warnbox"></div>
+    <div id="out" hidden>
+      <div class="duo">
+        <div class="side"><div class="big"><div class="k">Comprar e alugar</div><div class="v num" id="r_prop">—</div><div class="subv" id="r_propSub"></div></div></div>
+        <div class="side b"><div class="big"><div class="k" id="r_invLab">Investir</div><div class="v num" id="r_inv">—</div><div class="subv" id="r_invSub"></div></div></div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="t">Do seu bolso no 1º mês</div><div class="n num" id="m_first">—</div><div class="d" id="m_firstD"></div></div>
+        <div class="metric"><div class="t">Mês mais pesado</div><div class="n num" id="m_peak">—</div><div class="d" id="m_peakD"></div></div>
+        <div class="metric"><div class="t">Total que sai do seu bolso</div><div class="n num" id="m_total">—</div><div class="d">entrada, custos da compra e todos os complementos. O mesmo valor vai para o investimento.</div></div>
+        <div class="metric"><div class="t">O aluguel passa a pagar tudo</div><div class="n num" id="m_cover">—</div><div class="d" id="m_coverD"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="out2" hidden>
+    <div class="eyebrow">Patrimônio ano a ano</div>
+    <p class="note">Quanto você teria em cada ano se vendesse o imóvel ou resgatasse o investimento naquele momento, já descontados dívida, custos e impostos.</p>
+    <div class="card">
+      <div class="chartwrap"><div id="chart"></div><div class="clegend" id="legend"></div></div>
+      <div class="subhead">Ranking no fim do período</div>
+      <div class="tablewrap"><table class="res"><thead><tr><th>Opção</th><th class="n">Patrimônio final</th><th class="n">Diferença p/ o imóvel</th></tr></thead><tbody id="rank"></tbody></table></div>
+      <details><summary>Ver a tabela ano a ano</summary>
+        <div class="tablewrap"><table class="res"><thead><tr><th>Ano</th><th class="n">Imóvel</th><th class="n" id="th_best">Investir</th><th class="n">Dívida</th><th class="n">Saiu do bolso</th></tr></thead><tbody id="annual"></tbody></table></div>
+      </details>
+    </div>
+
+    <div class="eyebrow">De onde vem o resultado</div>
+    <p class="note">A conta de cada lado no último ano, como se você vendesse e resgatasse tudo.</p>
+    <div class="card">
+      <div class="subhead" style="margin-top:2px">Comprar e alugar</div>
+      <div class="bal" id="bal_prop"></div>
+      <div class="subhead" id="bal_invLab">Investir</div>
+      <div class="bal b" id="bal_inv"></div>
+    </div>
+  </div>
+
+  <div class="eyebrow">Como ler o resultado</div>
+  <div class="card">
+    <ul class="read">
+      <li>As duas opções usam exatamente o mesmo dinheiro: a entrada e os custos da compra no início, e o complemento da parcela todo mês. A diferença é onde esse dinheiro trabalha, no imóvel ou no investimento.</li>
+      <li>Quando o aluguel passa a pagar tudo e ainda sobra, a sobra é investida no lado do imóvel. Isso costuma acontecer depois que o financiamento acaba ou quando o aluguel sobe mais que a parcela.</li>
+      <li>O resultado é muito sensível a duas premissas: a valorização do imóvel e o rendimento do investimento. Teste um cenário pessimista e um otimista antes de decidir.</li>
+      <li>"Em dinheiro de hoje" desconta a inflação: mostra quanto aquele patrimônio compraria hoje. É a forma mais honesta de comparar valores de daqui a décadas.</li>
+      <li>Imóvel não tem só número: dá trabalho com inquilino, é difícil de vender rápido e concentra o patrimônio num bem só. Investimento tem liquidez, mas oscila e exige disciplina para não gastar.</li>
+    </ul>
+    <details><summary>Premissas do cálculo</summary>
+      <ul class="read">
+        <li>Financiamento: juros anuais convertidos em taxa mensal equivalente. A TR corrige o saldo todo mês antes dos juros; no SAC a amortização é o saldo dividido pelos meses restantes, na PRICE a parcela é recalculada sobre o saldo corrigido.</li>
+        <li>Aluguel, custos fixos e seguros são reajustados uma vez por ano. A vacância é distribuída como média nos meses. A manutenção é calculada sobre o valor atualizado do imóvel.</li>
+        <li>IR do aluguel: alíquota informada sobre o aluguel recebido menos taxa da imobiliária e custos fixos do dono (IPTU e condomínio), que a lei permite descontar. É uma aproximação do carnê-leão.</li>
+        <li>IR da venda do imóvel: lucro = valor de venda menos corretagem, menos preço e custos da compra. Sobre o lucro aplica-se o fator de redução FR2 da Lei 11.196/2005 (1 ÷ 1,0035 elevado aos meses de posse) e as alíquotas de 15% até R$ 5 milhões, 17,5% até R$ 10 milhões, 20% até R$ 30 milhões e 22,5% acima. Isenções específicas, como imóvel único de até R$ 440 mil, não são aplicadas automaticamente.</li>
+        <li>Investimentos: cada aporte rende juros compostos e paga IR só no resgate, sobre o próprio ganho. CDB, Tesouro e fundos seguem a tabela regressiva pelo tempo de cada aporte (22,5% até 6 meses, 20% até 12, 17,5% até 24 e 15% acima). Ações pagam 15% sobre o ganho. LCI, LCA e poupança são isentas. Come-cotas dos fundos, IR cobrado em vencimentos intermediários e a isenção de R$ 20 mil mensais em ações não são simulados; adiar todo o imposto para o resgate final favorece um pouco os investimentos tributados.</li>
+        <li>O patrimônio de cada ano supõe venda e resgate naquele momento. Rendimento e valorização são médias constantes, sem oscilações. Rentabilidade passada não garante rentabilidade futura.</li>
+      </ul>
+    </details>
+  </div>
+
+  <div class="seealso"><span class="lbl">Veja também</span><a href="alugar.html">Financiar ou alugar e investir</a><a href="financiamento.html">Financiar ou pagar à vista</a><a href="amortizacao.html">Amortização inteligente</a><a href="comparador-investimentos.html">Comparador de investimentos</a></div>
+
+  <footer>
+    <div>Financiar imóvel para alugar ou investir · ferramenta educativa @juanpablodsc</div>
+    <div>Conteúdo educativo. Não é recomendação de investimento nem consultoria individual.</div>
+  </footer>
+</div>
+
+<script>
+"use strict";
+// SIM-START
+const PRODS=[
+  {id:'cdb',nome:'CDB',tax:'reg',tag:'IR regressivo',ph:'11'},
+  {id:'tesouro',nome:'Tesouro Direto',tax:'reg',tag:'IR regressivo',ph:'10,8'},
+  {id:'fundos',nome:'Fundos de investimento',tax:'reg',tag:'IR regressivo',ph:'10,5'},
+  {id:'acoes',nome:'Ações',tax:'flat',tag:'IR de 15%',ph:'13'},
+  {id:'lci',nome:'LCI / LCA',tax:'isento',tag:'isento de IR',ph:'9'},
+  {id:'poup',nome:'Poupança',tax:'isento',tag:'isenta de IR',ph:'6,5'}
+];
+function irInv(prod,months){
+  if(prod.tax==='isento') return 0;
+  if(prod.tax==='flat') return .15;
+  if(prod.tax==='manual') return prod.ir/100;
+  if(months<=6) return .225; if(months<=12) return .20; if(months<=24) return .175; return .15;
+}
+function irImovel(base){
+  if(base<=0) return 0;
+  const faixas=[[5e6,.15],[1e7,.175],[3e7,.20],[Infinity,.225]];
+  let t=0, prev=0;
+  for(const [lim,al] of faixas){ if(base>prev){ t+=(Math.min(base,lim)-prev)*al; } prev=lim; }
+  return t;
+}
+function simulate(p,prod){
+  const n=Math.round(p.years*12);
+  const iL=p.rateUnit==='mensal'?p.rate/100:Math.pow(1+p.rate/100,1/12)-1;
+  const trM=Math.pow(1+p.tr/100,1/12)-1;
+  const ri=Math.pow(1+prod.rate/100,1/12)-1;
+  const buyCosts=p.price*p.buy/100;
+  const initial=p.down+buyCosts;
+  const rentG=p.rentg===null?p.infl:p.rentg;
+  const G=new Float64Array(n+1); G[0]=1; for(let k=1;k<=n;k++) G[k]=G[k-1]*(1+ri);
+  const invC=new Float64Array(n+1), propC=new Float64Array(n+1); invC[0]=initial;
+  const defl=m=>Math.pow(1+p.infl/100,m/12);
+  let debt=Math.max(0,p.price-p.down);
+  let outNom=initial, outReal=initial, firstNeed=0, first=null, peak=0, peakMonth=0, lastNeed=0;
+  let totInterest=0;
+  const rows=[];
+  function liquid(C,t){
+    let gross=0, tax=0;
+    for(let m=0;m<=t;m++){ if(!C[m]) continue; const v=C[m]*G[t-m]; gross+=v; const gain=v-C[m]; if(gain>0) tax+=gain*irInv(prod,t-m); }
+    return {gross,tax,net:gross-tax};
+  }
+  function snap(t){
+    const value=p.price*Math.pow(1+p.appr/100,t/12);
+    const saleCost=value*p.sell/100;
+    const gain=value-saleCost-(p.price+buyCosts);
+    const fr2=1/Math.pow(1.0035,t);
+    const saleTax=p.saleTax==='calc'&&gain>0?irImovel(gain*fr2):0;
+    const house=value-saleCost-saleTax-debt;
+    const pi=liquid(propC,t), ii=liquid(invC,t);
+    let propIn=0; for(let m=0;m<=t;m++) propIn+=propC[m];
+    return {t,value,saleCost,saleTax,debt,house,propInv:pi,propIn,propTotal:house+pi.net,inv:ii,outNom,outReal,defl:defl(t)};
+  }
+  rows.push(snap(0));
+  for(let m=1;m<=n;m++){
+    const y=Math.floor((m-1)/12);
+    let pay=0, interest=0;
+    if(debt>0.005&&m<=p.term){
+      debt*=1+trM;
+      const rem=p.term-m+1;
+      interest=debt*iL;
+      let amort;
+      if(rem===1) amort=debt;
+      else if(p.sys==='sac') amort=debt/rem;
+      else amort=(iL===0?debt/rem:debt*iL/(1-Math.pow(1+iL,-rem)))-interest;
+      amort=Math.min(debt,Math.max(0,amort));
+      pay=interest+amort; debt-=amort; totInterest+=interest;
+      if(debt<0.005) debt=0;
+    }
+    const fI=Math.pow(1+p.infl/100,y);
+    const rentGross=p.rent*Math.pow(1+rentG/100,y)*(1-p.vac/12);
+    const adm=rentGross*p.adm/100;
+    const own=p.own*fI;
+    const value=p.price*Math.pow(1+p.appr/100,(m-1)/12);
+    const maint=value*p.maint/100/12;
+    const ins=pay>0?p.ins*fI:0;
+    const irR=Math.max(0,rentGross-adm-own)*p.irr/100;
+    const rentNet=rentGross-adm-irR;
+    const net=rentNet-own-maint-ins-pay;
+    const need=Math.max(0,-net), surplus=Math.max(0,net);
+    invC[m]=need; propC[m]=surplus;
+    outNom+=need; outReal+=need/defl(m);
+    if(m===1){ firstNeed=need; first={pay,ins,own,maint,rentNet,surplus}; }
+    if(need>peak){ peak=need; peakMonth=m; }
+    if(need>0) lastNeed=m;
+    if(m%12===0||m===n) rows.push(snap(m));
+  }
+  return {rows,last:rows[rows.length-1],initial,buyCosts,firstNeed,first,peak,peakMonth,lastNeed,n,totInterest};
+}
+// SIM-END
+
+const $=id=>document.getElementById(id);
+const BRL=v=>(isFinite(v)?v:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:0,maximumFractionDigits:0});
+const val=id=>{const s=($(id).value+'').trim().replace(',','.'); if(s==='') return null; const x=parseFloat(s); return isFinite(x)?x:null;};
+const state={rateUnit:'anual',sys:'sac',saleTax:'calc',view:'real'};
+const COLORS=['#B07D2B','#4B6C86','#3E7C6B','#9E3B26','#7A5C99','#6F8F3A','#8A6D3B'];
+const yrs=m=>{const a=Math.floor(m/12), r=m%12; return (a?a+(a===1?' ano':' anos'):'')+(a&&r?' e ':'')+(r?r+(r===1?' mês':' meses'):'');};
+
+$('prodlist').innerHTML=PRODS.map(o=>`<div class="inv"><div class="nm"><b>${o.nome}</b><span>${o.tag}</span></div><div class="affix"><input id="r_${o.id}" type="number" inputmode="decimal" min="0" step="0.1" placeholder="ex: ${o.ph}" aria-label="Rendimento de ${o.nome}"><span class="u">% a.a.</span></div></div>`).join('');
+
+let current=null;
+function compute(){
+  const p={price:val('price'),down:val('down')||0,buy:val('buy')||0,rate:val('rate'),rateUnit:state.rateUnit,term:val('term'),sys:state.sys,
+    ins:val('ins')||0,tr:val('tr')||0,rent:val('rent'),rentg:val('rentg'),vac:val('vac')||0,adm:val('adm')||0,own:val('own')||0,maint:val('maint')||0,
+    irr:val('irr')||0,years:val('years'),infl:val('infl'),appr:val('appr'),sell:val('sell')||0,saleTax:state.saleTax};
+  const prods=PRODS.map(o=>({...o,rate:val('r_'+o.id)})).filter(o=>o.rate!==null&&o.rate>0);
+  const mr=val('m_rate');
+  if(mr!==null&&mr>0) prods.push({id:'man',nome:($('m_nome').value||'').trim()||'Outro investimento',tax:'manual',ir:val('m_ir')||0,rate:mr});
+  const ready=p.price>0&&p.rate!==null&&p.term>0&&p.rent!==null&&p.years>0&&p.infl!==null&&p.appr!==null&&prods.length>0;
+  if(!ready){ current=null; hideOut('Preencha preço, juros, prazo, aluguel, anos, inflação, valorização e o rendimento de ao menos um investimento para ver o resultado.'); return; }
+  if(p.down>p.price){ current=null; hideOut('A entrada não pode ser maior que o preço do imóvel.'); return; }
+  p.term=Math.round(p.term);
+  const sims=prods.map(prod=>({prod,res:simulate(p,prod)}));
+  sims.sort((a,b)=>b.res.last.inv.net-a.res.last.inv.net);
+  current={p,sims};
+  render();
+}
+function hideOut(msg){ $('out').hidden=true; $('out2').hidden=true; $('warnbox').innerHTML=''; $('verdict').innerHTML=msg; }
+
+function render(){
+  if(!current) return;
+  const {p,sims}=current, real=state.view==='real';
+  const best=sims[0], R=best.res, L=R.last, D=real?L.defl:1;
+  const f=v=>BRL(v/D);
+  const prop=L.propTotal, inv=L.inv.net, diff=prop-inv;
+  const when=real?'em dinheiro de hoje':'em dinheiro do futuro';
+  $('out').hidden=false; $('out2').hidden=false;
+
+  $('r_prop').textContent=f(prop);
+  $('r_propSub').textContent='imóvel vendido e dívida quitada'+(L.propInv.net>0?', mais as sobras de aluguel aplicadas em '+best.prod.nome:'');
+  $('r_invLab').textContent='Investir em '+best.prod.nome;
+  $('r_inv').textContent=f(inv);
+  $('r_invSub').textContent=sims.length>1?'o melhor dos investimentos que você preencheu':'já descontado o imposto de renda';
+
+  // verdict
+  const lead=diff>=0?'comprar e alugar':'investir em '+best.prod.nome;
+  let msg;
+  if(Math.abs(diff)<Math.max(1000,Math.abs(inv)*0.01)) msg=`Em ${p.years} anos, as duas opções terminam praticamente empatadas, perto de <b>${f(inv)}</b> ${when}. Aqui pesam mais a liquidez, o risco e o trabalho de cada uma.`;
+  else msg=`Em ${p.years} anos, <span class="hl">${lead}</span> termina com <b>${f(Math.abs(diff))}</b> a mais, ${when}.`;
+  // virada
+  const yrsRows=R.rows.filter(r=>r.t>0);
+  let cross=null;
+  for(let i=1;i<yrsRows.length;i++){ const a=yrsRows[i-1].propTotal-yrsRows[i-1].inv.net, b=yrsRows[i].propTotal-yrsRows[i].inv.net; if((a<0)!==(b<0)) cross=yrsRows[i]; }
+  if(cross&&Math.abs(diff)>=1000) msg+=` A virada acontece por volta de ${yrs(cross.t)}: antes disso, ${diff>=0?'o investimento estava na frente':'o imóvel estava na frente'}.`;
+  if(R.firstNeed>0) msg+=` Para manter o imóvel, você completa <b>${BRL(R.firstNeed)}</b> no primeiro mês.`;
+  else msg+=` O aluguel já paga a parcela e os custos desde o primeiro mês.`;
+  $('verdict').innerHTML=msg;
+
+  // warnings
+  let w='';
+  const blanks=[['buy','custos da compra'],['vac','meses sem inquilino'],['maint','manutenção'],['irr','IR sobre o aluguel'],['sell','custos da venda']].filter(([id])=>val(id)===null).map(x=>x[1]);
+  if(blanks.length) w+=`<div class="info">Em branco e contando como zero: ${blanks.join(', ')}. Isso deixa o imóvel melhor do que costuma ser na vida real.</div>`;
+  if(L.house<0) w+=`<div class="warn">No fim do período, a venda do imóvel não cobre a dívida e os custos. O valor do imóvel aparece negativo no cálculo.</div>`;
+  if(p.appr>p.infl+1.5) w+=`<div class="info">A valorização informada está bem acima da inflação por décadas. Isso pesa muito a favor do imóvel; teste também com a valorização igual à inflação.</div>`;
+  $('warnbox').innerHTML=w;
+
+  // metrics (valores da época)
+  const F=R.first;
+  $('m_first').textContent=R.firstNeed>0?BRL(R.firstNeed):'R$ 0';
+  $('m_firstD').textContent=`parcela ${BRL(F.pay)} + seguros e custos ${BRL(F.ins+F.own+F.maint)} − aluguel líquido ${BRL(F.rentNet)}`;
+  $('m_peak').textContent=R.peak>0?BRL(R.peak):'R$ 0';
+  $('m_peakD').textContent=R.peak>0?(R.peakMonth===1?'no 1º mês. Depois o complemento diminui.':'no mês '+R.peakMonth+', em valores da época'):'o aluguel cobre tudo o tempo todo';
+  $('m_total').textContent=BRL(real?L.outReal:L.outNom);
+  if(R.lastNeed===0){ $('m_cover').textContent='Desde o início'; $('m_coverD').textContent='você não precisa completar nada'; }
+  else if(R.lastNeed>=R.n){ $('m_cover').textContent='Não chega'; $('m_coverD').textContent=`até o fim dos ${p.years} anos você ainda completa todo mês`; }
+  else { $('m_cover').textContent='Após '+yrs(R.lastNeed); $('m_coverD').textContent='a partir daí, a sobra do aluguel é investida no lado do imóvel'; }
+
+  // ranking
+  const rk=[{nome:'Comprar e alugar',v:prop,prop:true}].concat(sims.map(s=>({nome:s.prod.nome,v:s.res.last.inv.net}))).sort((a,b)=>b.v-a.v);
+  $('rank').innerHTML=rk.map((r,i)=>`<tr class="${i===0?'win':''} ${r.prop?'prop':''}"><td>${r.nome}</td><td class="n">${f(r.v)}</td><td class="n">${r.prop?'—':(r.v-prop>=0?'+':'−')+f(Math.abs(r.v-prop))}</td></tr>`).join('');
+
+  // annual
+  $('th_best').textContent=best.prod.nome;
+  $('annual').innerHTML=yrsRows.filter(r=>r.t%12===0||r.t===R.n).map(r=>{const d=real?r.defl:1;return `<tr><td>${Math.round(r.t/12*10)/10}</td><td class="n">${BRL(r.propTotal/d)}</td><td class="n">${BRL(r.inv.net/d)}</td><td class="n">${BRL(r.debt/d)}</td><td class="n">${BRL(real?r.outReal:r.outNom)}</td></tr>`;}).join('');
+
+  // breakdown
+  const line=(lab,v,cls)=>`<div class="r ${cls||''}"><span class="lab">${lab}</span><span class="v">${v}</span></div>`;
+  const sg=v=>(v<0?'− ':'')+f(Math.abs(v));
+  let bp=line('Valor estimado de venda',f(L.value))+line('Corretagem e custos da venda',sg(-L.saleCost),'neg')+line('IR sobre o lucro da venda',sg(-L.saleTax),'neg');
+  if(L.debt>0.5) bp+=line('Dívida que ainda falta',sg(-L.debt),'neg');
+  if(L.propInv.net>0.5) bp+=line('Sobras de aluguel aplicadas, já com IR','+ '+f(L.propInv.net),'pos');
+  bp+=line('Patrimônio de comprar e alugar',sg(prop),'tot');
+  $('bal_prop').innerHTML=bp;
+  $('bal_invLab').textContent='Investir em '+best.prod.nome;
+  const outV=real?L.outReal:L.outNom;
+  const ganho=L.inv.gross/D-outV;
+  let bi=line('Dinheiro que saiu do seu bolso',BRL(outV))+line(real?'Rendimento acima da inflação':'Rendimento',(ganho<0?'− ':'+ ')+BRL(Math.abs(ganho)),ganho<0?'neg':'pos')+line('IR no resgate',sg(-L.inv.tax),'neg')+line('Patrimônio de investir',f(inv),'tot');
+  $('bal_inv').innerHTML=bi;
+
+  chart(R,sims,real);
+}
+
+function chart(R,sims,real){
+  const W=680,H=290,padL=84,padR=14,padT=14,padB=30,plotW=W-padL-padR,plotH=H-padT-padB;
+  const pts=R.rows.filter(r=>r.t%12===0||r.t===R.n);
+  const series=[{nome:'Comprar e alugar',color:'#12463B',w:3,dash:'',v:pts.map(r=>r.propTotal/(real?r.defl:1))}];
+  sims.forEach((s,i)=>{const rr=s.res.rows.filter(r=>r.t%12===0||r.t===s.res.n);series.push({nome:s.prod.nome,color:COLORS[i%COLORS.length],w:i===0?2.6:1.8,dash:i===0?'7 4':'3 4',v:rr.map(r=>r.inv.net/(real?r.defl:1))});});
+  let lo=0,hi=1; series.forEach(s=>s.v.forEach(v=>{if(v<lo)lo=v;if(v>hi)hi=v;})); hi*=1.06; if(lo<0) lo*=1.06;
+  const maxT=R.n, xs=t=>padL+t/maxT*plotW, ys=v=>padT+(1-(v-lo)/(hi-lo))*plotH;
+  const compact=v=>{const a=Math.abs(v),s=v<0?'−':'';return a>=1e6?s+'R$ '+(a/1e6).toFixed(1).replace('.',',')+' mi':a>=1e3?s+'R$ '+Math.round(a/1e3)+' mil':s+'R$ '+Math.round(a);};
+  let g='';
+  for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4,y=ys(v);g+=`<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="#C9D2CF" stroke-width="1" ${i?'stroke-dasharray="3 5"':''}/><text x="${padL-8}" y="${(y+4).toFixed(1)}" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="#7A8A85">${compact(v)}</text>`;}
+  if(lo<0){const y=ys(0);g+=`<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="#7A8A85" stroke-width="1"/>`;}
+  for(let i=0;i<=4;i++){const t=Math.round(maxT*i/4),a=Math.round(t/12);g+=`<text x="${xs(t).toFixed(1)}" y="${H-8}" text-anchor="${i===0?'start':i===4?'end':'middle'}" font-family="IBM Plex Mono, monospace" font-size="12" fill="#7A8A85">${a} ${a===1?'ano':'anos'}</text>`;}
+  series.slice().reverse().forEach(s=>{g+=`<polyline points="${s.v.map((v,i)=>xs(pts[i].t).toFixed(1)+','+ys(v).toFixed(1)).join(' ')}" fill="none" stroke="${s.color}" stroke-width="${s.w}" ${s.dash?`stroke-dasharray="${s.dash}"`:''} stroke-linejoin="round"/>`;});
+  $('chart').innerHTML=`<svg class="chart" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Patrimônio ano a ano de comprar e alugar contra investir">${g}</svg>`;
+  $('legend').innerHTML=series.map(s=>`<div><i style="background:${s.color}"></i>${s.nome}</div>`).join('');
+}
+
+document.querySelectorAll('.seg').forEach(seg=>{const key=seg.id.replace('seg-','');seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{state[key]=b.dataset.v;seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));key==='view'?render():compute();}));});
+document.querySelectorAll('input').forEach(el=>el.addEventListener('input',compute));
+compute();
+</script>
+</body>
+</html>
